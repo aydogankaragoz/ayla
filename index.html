@@ -274,6 +274,41 @@
   html.m .hb{order:3;width:100%;margin:14px 0 0;justify-content:center;padding:10px 18px}
   html.m .hb .emoji{font-size:30px;margin-right:12px}
   html.m .hb b{font-size:26px} html.m .hb .u{font-size:14px} html.m .hb i{font-size:12px;letter-spacing:1.5px}
+
+  /* ===== Ultrason oyunu ===== */
+  #heartBtn{margin-right:20px}
+  .hb.us{margin-left:0;margin-right:44px;background:rgba(151,226,207,.1);border-color:rgba(151,226,207,.45);white-space:nowrap}
+  .hb.us:hover,.hb.us:focus{background:rgba(151,226,207,.2);border-color:var(--mint);box-shadow:0 0 0 6px rgba(151,226,207,.15)}
+  .hb.us .emoji{animation:usnudge 3.2s ease-in-out infinite}
+  .hb.us i{color:var(--mint)}
+  .hb.us .u{margin-left:1px}
+  @keyframes usnudge{0%,70%,100%{transform:rotate(0)}76%{transform:rotate(-12deg)}84%{transform:rotate(10deg)}92%{transform:rotate(-5deg)}}
+  .usc{max-width:1240px;max-height:100%;overflow-y:auto;padding:26px 40px 22px}
+  .usbtns{display:flex;flex:none;margin-left:20px}
+  .usbtns .ovx{margin-left:12px}
+  #usTitle{font-size:34px;transition:color .2s}
+  #usTitle.win{color:var(--mint)}
+  #usCv{display:block;width:100%;height:54vh;max-height:600px;margin-top:14px;border-radius:20px;background:#000;border:1px solid var(--line);
+    cursor:pointer;outline:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+  #usCv:focus{border-color:rgba(151,226,207,.5)}
+  .uschips{display:grid;grid-template-columns:repeat(6,1fr);grid-column-gap:10px;grid-row-gap:8px;margin-top:14px}
+  .uschip{display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:999px;border:1px solid var(--line);
+    font-size:18px;font-weight:800;color:var(--dim);white-space:nowrap}
+  .uschip .emoji{font-size:22px;margin-right:8px;filter:grayscale(1);opacity:.45}
+  .uschip.got{color:var(--ink);border-color:rgba(151,226,207,.55);background:rgba(151,226,207,.12)}
+  .uschip.got .emoji{filter:none;opacity:1}
+  .uschip.todo{border-color:var(--peach);color:var(--peach)}
+  @media (max-height:760px){ #usCv{height:46vh} #usTitle{font-size:28px} .usc{padding:18px 32px 14px} }
+  @media (max-width:820px){
+    .usc{padding:16px 14px 14px}
+    #usTitle{font-size:20px;line-height:1.2} .usbtns{margin-left:10px} .usbtns .ovx{margin-left:8px}
+    #usCv{height:50vh;max-height:340px;margin-top:10px;border-radius:14px}
+    .uschips{grid-template-columns:repeat(3,1fr);grid-column-gap:6px;grid-row-gap:6px;margin-top:10px}
+    .uschip{font-size:12px;padding:5px 2px} .uschip .emoji{font-size:15px;margin-right:4px}
+    .usc .usk{display:none}
+  }
+  html.m #heartBtn{margin-right:0}
+  html.m .hb.us{margin:8px 0 0}
 </style>
 </head>
 <body>
@@ -290,6 +325,10 @@
     <button class="hb" id="heartBtn" type="button">
       <span class="emoji" id="hbIcon">💗</span>
       <span><b id="bpm">–</b><span class="u">atım/dk</span><i>Kalbini dinle ▸</i></span>
+    </button>
+    <button class="hb us" id="usBtn" type="button">
+      <span class="emoji">👶</span>
+      <span><b id="usWk">–</b><span class="u">. hafta</span><i>Ultrasona bak ▸</i></span>
     </button>
     <div class="clock">
       <div class="time" id="time">--:--</div>
@@ -416,6 +455,21 @@
     </div>
     <canvas id="ecg"></canvas>
     <div class="ovf">Ses ve grafik, bu haftaki ortalama bebek kalp hızına göre oluşturulmuş bir canlandırmadır; gerçek bir kayıt değildir.</div>
+  </div>
+</div>
+
+<div class="ov" id="usOv" hidden>
+  <div class="ovc usc">
+    <div class="ovh">
+      <div><div class="label" id="usLabel">Ultrason</div><div class="ovt" id="usTitle" aria-live="polite"></div></div>
+      <div class="usbtns">
+        <button class="ovx emoji" id="usSnd" type="button" aria-label="Sesi kapat">🔊</button>
+        <button class="ovx" id="usx" type="button" aria-label="Kapat">✕</button>
+      </div>
+    </div>
+    <canvas id="usCv" tabindex="0" role="application" aria-label="Ultrason ekranı. Bebeğe dokununca hareket eder."></canvas>
+    <div class="uschips" id="usChips"></div>
+    <div class="ovf">Bu gerçek bir ultrason değil, eğlence için çizilmiş bir canlandırmadır. <span class="usk">Kumandada: ok tuşlarıyla gez, OK ile dokun.</span></div>
   </div>
 </div>
 
@@ -826,6 +880,7 @@
     var b = Math.round(baseBpm());
     $('bpm').textContent = b || '–';
     if (b) $('hbIcon').style.animationDuration = (60 / b).toFixed(3) + 's';
+    $('usWk').textContent = Math.floor((new Date() - start) / DAY / 7) + 1;
   }
 
   var H = { open: false, ctx: null, noise: null, master: null, bg: null, timer: null, raf: 0,
@@ -961,19 +1016,28 @@
     if (now - H.lastTxt > 0.8) { H.lastTxt = now; $('ovBpm').textContent = Math.round(H.bpm); }
     H.raf = requestAnimationFrame(frame);
   }
+  function startBeats(vol) {
+    initAudio();
+    if (H.master) H.master.gain.value = vol;
+    H.t0 = clock(); H.next = clock() + 0.05; H.beats = []; H.bpm = baseBpm() || 140;
+    if (H.timer) clearInterval(H.timer);
+    H.timer = setInterval(schedule, 50);
+  }
+  function stopBeats() {
+    clearInterval(H.timer); H.timer = null;
+    if (H.bg) { try { H.bg.stop(); } catch (e) {} H.bg = null; }
+    if (H.ctx && H.ctx.suspend) setTimeout(function () { if (!H.open && !U.open) H.ctx.suspend(); }, 400);
+  }
   function openHeart() {
-    if (H.open) return;
+    if (H.open || U.open) return;
     H.open = true;
     $('ov').hidden = false;
     var gaF = (new Date() - start) / DAY, wk = Math.floor(gaF / 7);
     $('ovTitle').textContent = CONFIG.name.replace(/’?mız$|'?mız$/, '') + '’nın kalbi';
     $('ovSide').innerHTML = '<span>' + (wk + 1) + '. hafta ortalaması </span><b>' + Math.round(baseBpm()) + ' atım/dk</b><span> · normal aralık <em style="font-style:normal;white-space:nowrap">110–160</em></span>';
-    initAudio();
-    H.t0 = clock(); H.next = clock() + 0.05; H.beats = []; H.bpm = baseBpm() || 140;
+    startBeats(0.9);
     H.vals = null; H.lastX = -1; H.lastPulse = -1; H.lastTxt = 0;
     $('ovBpm').textContent = Math.round(H.bpm);
-    if (H.timer) clearInterval(H.timer);
-    H.timer = setInterval(schedule, 50);
     H.raf = requestAnimationFrame(frame);
     try { $('ovx').focus(); } catch (e) {}
   }
@@ -981,18 +1045,614 @@
     if (!H.open) return;
     H.open = false;
     $('ov').hidden = true;
-    clearInterval(H.timer); H.timer = null;
     cancelAnimationFrame(H.raf);
-    if (H.bg) { try { H.bg.stop(); } catch (e) {} H.bg = null; }
-    if (H.ctx && H.ctx.suspend) setTimeout(function () { if (!H.open) H.ctx.suspend(); }, 400);
+    stopBeats();
   }
   $('heartBtn').addEventListener('click', openHeart);
   $('ovx').addEventListener('click', closeHeart);
   $('ov').addEventListener('click', function (e) { if (e.target === $('ov')) closeHeart(); });
 
+  /* ---------- Ultrason oyunu ---------- */
+  var MOVES = [
+    { id: 'kick', e: '🦶', n: 'Tekme',    ask: 'Ayağına dokun, tekme atsın',          ok: 'Tekme attı!' },
+    { id: 'wave', e: '👋', n: 'El salla', ask: 'Eline dokun, el sallasın',            ok: 'El salladı!' },
+    { id: 'suck', e: '👍', n: 'Parmak',   ask: 'Ağzına dokun, parmağını emsin',       ok: 'Parmağını emiyor!' },
+    { id: 'yawn', e: '🥱', n: 'Esneme',   ask: 'Başına dokun, esnesin',               ok: 'Kocaman esnedi!' },
+    { id: 'hic',  e: '💧', n: 'Hıçkırık', ask: 'Karnına dokun, hıçkırsın',            ok: 'Hıçkırdı!' },
+    { id: 'flip', e: '🤸', n: 'Takla',    ask: 'Üç kez hızlıca dokun, takla atsın',   ok: 'Takla attı!' }
+  ];
+  var DUR = { kick: 0.9, wave: 2.2, suck: 3.2, yawn: 2.6, hic: 1.8, flip: 1.9, swim: 1.5, wig: 1.1, poke: 0.4 };
+  var U = { open: false, raf: 0, W: 0, H: 0, a: {}, tapT: [], ripples: [], hearts: [], found: {}, count: {},
+            muted: false, cur: { x: 0, y: 0, on: false } };
+  var US_VOL = 0.4, SPK_N = 3;
+
+  function usNow() { return performance.now() / 1000; }
+  function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function smooth(v) { v = clamp01(v); return v * v * (3 - 2 * v); }
+  function lerp(a, b, k) { return a + (b - a) * k; }
+  function act(name, t) {                       // hareketin ilerlemesi (0–1), aktif değilse -1
+    if (U.a[name] === undefined) return -1;
+    var p = (t - U.a[name]) / DUR[name];
+    return p >= 0 && p < 1 ? p : -1;
+  }
+  function hold(p, edge) { return p < 0 ? 0 : smooth(Math.min(p / edge, (1 - p) / edge)); }
+
+  /* Yelpaze geometrisi: θ dikeyden açı, sağa doğru pozitif */
+  function sector(g) {
+    g.beginPath();
+    g.arc(U.ax, U.ay, U.R0, Math.PI / 2 - U.A, Math.PI / 2 + U.A);
+    g.arc(U.ax, U.ay, U.R, Math.PI / 2 + U.A, Math.PI / 2 - U.A, true);
+    g.closePath();
+  }
+  function band(g, r0, r1, th0, th1, shade, wob, seed, taper) {
+    var n = 40, i, th, w;
+    g.fillStyle = shade;
+    g.beginPath();
+    for (i = 0; i <= n; i++) {
+      th = lerp(th0, th1, i / n); w = wob * Math.sin(th * 7 + seed) + wob * 0.5 * Math.sin(th * 17 + seed * 2);
+      g.lineTo(U.ax + (r0 + w) * Math.sin(th), U.ay + (r0 + w) * Math.cos(th));
+    }
+    for (i = n; i >= 0; i--) {
+      th = lerp(th0, th1, i / n); w = wob * Math.sin(th * 5 + seed * 3) + wob * 0.5 * Math.sin(th * 13 + seed);
+      var r2 = taper ? r0 + (r1 - r0) * Math.pow(Math.sin(Math.PI * i / n), 0.6) : r1;
+      g.lineTo(U.ax + (r2 + w) * Math.sin(th), U.ay + (r2 + w) * Math.cos(th));
+    }
+    g.closePath(); g.fill();
+  }
+  function blotches(g, n, r0, r1, th0, th1, lo, hi) {
+    for (var i = 0; i < n; i++) {
+      var r = lerp(r0, r1, Math.random()), th = lerp(th0, th1, Math.random());
+      var v = Math.round(lerp(lo, hi, Math.random()));
+      g.fillStyle = 'rgba(' + v + ',' + v + ',' + v + ',.7)';
+      g.save();
+      g.translate(U.ax + r * Math.sin(th), U.ay + r * Math.cos(th));
+      g.rotate(-th);
+      g.scale(1 + Math.random() * 3.5, 1);
+      g.beginPath(); g.arc(0, 0, U.H * (0.004 + Math.random() * 0.009), 0, Math.PI * 2); g.fill();
+      g.restore();
+    }
+  }
+  function usBuildBg() {
+    var c = document.createElement('canvas'), k = 0.5, R = U.R, A = U.A, g;
+    c.width = Math.ceil(U.W * k); c.height = Math.ceil(U.H * k);
+    g = c.getContext('2d'); g.scale(k, k);
+    g.fillStyle = '#0a0a0a'; g.fillRect(0, 0, U.W, U.H);
+    band(g, R * 0.16, R * 0.27, -A, A, '#6e6e6e', R * 0.006, 1.3);      // cilt ve kas
+    blotches(g, 190, R * 0.17, R * 0.27, -A, A, 60, 190);
+    band(g, R * 0.265, R * 0.285, -A, A, '#c9c9c9', R * 0.006, 2.1);    // rahim duvarı
+    band(g, R * 0.28, R * 0.35, -A * 0.25, A * 1.3, '#8c8c8c', R * 0.006, 4.2, true); // plasenta
+    blotches(g, 90, R * 0.29, R * 0.335, A * 0.1, A, 90, 200);
+    band(g, R * 0.885, R * 0.91, -A, A, '#b4b4b4', R * 0.012, 0.6);     // arka duvar
+    band(g, R * 0.905, R * 1.02, -A, A, '#5c5c5c', R * 0.012, 3.1);
+    blotches(g, 150, R * 0.9, R, -A, A, 50, 170);
+    for (var i = 0; i < 45; i++) {                                      // sıvıda yüzen küçük yankılar
+      var r = lerp(R * 0.4, R * 0.87, Math.random()), th = lerp(-A, A, Math.random()), v = 60 + Math.random() * 90 | 0;
+      g.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')';
+      g.fillRect(U.ax + r * Math.sin(th), U.ay + r * Math.cos(th), 3, 2);
+    }
+    U.bg = c;
+  }
+  function usBuildSpeckle() {
+    /* Benek deseni kutupsal: ışın yönüne dik uzanır, gerçek görüntüdeki gibi */
+    var w = Math.ceil(U.W / 2), h = Math.ceil(U.H / 2), ax = U.ax / 2, ay = U.ay / 2, R = U.R / 2;
+    var rows = Math.ceil(R / 1.3) + 2, cols = Math.ceil(U.A * 2 / 0.011) + 2, tab = new Float32Array(rows * cols);
+    U.spk = [];
+    for (var n = 0; n < SPK_N; n++) {
+      for (var i = 0; i < tab.length; i++) {
+        var q = Math.sqrt(-Math.log(1 - Math.random())) / 1.75;
+        tab[i] = 0.46 + 0.54 * (q > 1 ? 1 : q);
+      }
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      var g = c.getContext('2d'), im = g.createImageData(w, h), d = im.data, o = 0;
+      for (var y = 0; y < h; y++) {
+        var dy = y - ay;
+        for (var x = 0; x < w; x++, o += 4) {
+          var dx = x - ax, r = Math.sqrt(dx * dx + dy * dy), th = Math.atan2(dx, dy) + U.A;
+          var ri = r / 1.3 | 0, ti = th / 0.011 | 0, v = 255;
+          if (ri >= 0 && ri < rows && ti >= 0 && ti < cols) v = 255 * tab[ri * cols + ti] * (1 - 0.2 * r / R);
+          d[o] = v; d[o + 1] = v * 0.97; d[o + 2] = v * 0.92; d[o + 3] = 255;
+        }
+      }
+      g.putImageData(im, 0, 0);
+      U.spk.push(c);
+    }
+  }
+  function usBuild() {
+    var cv = $('usCv'), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var cw = cv.clientWidth, ch = cv.clientHeight, k = Math.min(dpr, 820 / cw);
+    U.cw = cw; U.ch = ch;
+    U.W = cv.width = Math.round(cw * k); U.H = cv.height = Math.round(ch * k);
+    U.g = cv.getContext('2d');
+    U.R = U.H * 1.2; U.R0 = U.H * 0.215; U.A = 0.62; U.ax = U.W / 2; U.ay = -U.H * 0.2;
+    var wk = (new Date() - start) / DAY / 7;
+    U.k = Math.min(U.H / 470, U.W / 420) * lerp(0.62, 1.1, clamp01((wk - 12) / 20));  // bebek haftayla büyür
+    U.homeX = U.W * 0.5 + 12 * U.k; U.homeY = U.H * 0.62;
+    U.x = U.tx = U.homeX; U.y = U.ty = U.homeY;
+    U.low = document.createElement('canvas');
+    U.low.width = Math.ceil(U.W * 0.5); U.low.height = Math.ceil(U.H * 0.5);
+    U.lg = U.low.getContext('2d');
+    usBuildBg(); usBuildSpeckle();
+    U.cur.x = U.homeX; U.cur.y = U.homeY;
+  }
+
+  /* ----- Bebeğin duruşu (gövdeye göre koordinat; x ayağa, -y yukarı doğru) ----- */
+  var NECK = [-85, 14], HEAD_OFS = [-40, -19], HIP_N = [58, -2], HIP_F = [50, -8], SH_N = [-58, -18], SH_F = [-50, -24];
+  function headPt(p, x, y) {
+    var c = Math.cos(p.head), s = Math.sin(p.head), hx = x + HEAD_OFS[0], hy = y + HEAD_OFS[1];
+    return [NECK[0] + hx * c - hy * s, NECK[1] + hx * s + hy * c];
+  }
+  function usPose(t) {
+    var p = { rot: Math.sin(t * 0.35) * 0.035, dy: Math.sin(t * 0.9) * 2.5, head: Math.sin(t * 0.5) * 0.03, jaw: 0, belly: Math.sin(t * 1.3) * 0.012, spread: 0.2 };
+    p.footN = [120 + Math.sin(t * 0.7) * 3, -42 + Math.cos(t * 0.6) * 3];
+    p.footF = [150 + Math.sin(t * 0.55 + 1) * 3, -16 + Math.cos(t * 0.5) * 3];
+    p.handN = [8 + Math.sin(t * 0.8) * 3, -76 + Math.cos(t * 0.7) * 3];
+    p.handF = [32 + Math.sin(t * 0.6 + 2) * 3, -68 + Math.cos(t * 0.8) * 2];
+
+    var e = act('wig', t);                      // kendiliğinden küçük kıpırdanma
+    if (e >= 0) { e = Math.sin(e * Math.PI); p.footN[0] += 16 * e; p.footN[1] -= 12 * e; p.head -= 0.05 * e; }
+    e = act('poke', t);
+    if (e >= 0) { p.dy += 5 * Math.sin(e * Math.PI); }
+    e = act('kick', t);
+    if (e >= 0) {
+      var kk = Math.pow(Math.sin(e * Math.PI * 2 % Math.PI), 0.7);
+      if (e < 0.5) { p.footN = [lerp(p.footN[0], 178, kk), lerp(p.footN[1], -116, kk)]; }
+      else { p.footF = [lerp(p.footF[0], 192, kk), lerp(p.footF[1], -86, kk)]; }
+      p.dy += 7 * kk;
+    }
+    e = act('wave', t);
+    if (e >= 0) {
+      var wv = hold(e, 0.14);
+      p.handN = [lerp(p.handN[0], -18 + Math.sin(t * 10) * 18, wv), lerp(p.handN[1], -112 + Math.cos(t * 20) * 3, wv)];
+      p.spread = lerp(p.spread, 1, wv);
+    }
+    e = act('swim', t);
+    if (e >= 0) {
+      var sw = hold(e, 0.2) * Math.sin(t * 7);
+      p.footN[0] += 18 * sw; p.footF[0] -= 16 * sw; p.handF[1] -= 10 * sw; p.handN[0] -= 8 * sw;
+    }
+    e = act('yawn', t);
+    if (e >= 0) {
+      var yw = hold(e, 0.3);
+      p.jaw = 0.5 * yw; p.head -= 0.2 * yw; p.handF[1] -= 26 * yw; p.handF[0] += 10 * yw;
+    }
+    e = act('hic', t);
+    if (e >= 0) {
+      var fr = e * 3 % 1, j = Math.exp(-fr * 7);
+      p.dy -= 15 * j; p.belly += 0.1 * j; p.head += 0.1 * j; p.footN[1] -= 8 * j; p.handN[1] -= 7 * j;
+    }
+    e = act('flip', t);
+    if (e >= 0) {
+      var tuck = hold(e, 0.25);
+      p.rot += Math.PI * 2 * smooth(e);
+      p.dy -= 48 * tuck;
+      p.footN = [lerp(p.footN[0], 82, tuck), lerp(p.footN[1], -66, tuck)];
+      p.footF = [lerp(p.footF[0], 100, tuck), lerp(p.footF[1], -50, tuck)];
+      p.handN = [lerp(p.handN[0], 6, tuck), lerp(p.handN[1], -62, tuck)];
+    }
+    e = act('suck', t);
+    if (e >= 0) {
+      var sc = hold(e, 0.14), m = headPt(p, 44, -40);
+      p.head += 0.08 * sc;
+      p.handN = [lerp(p.handN[0], m[0] + 9, sc), lerp(p.handN[1], m[1] - 7, sc)];
+      p.spread = lerp(p.spread, 0, sc);
+    }
+    return p;
+  }
+  function ik(s, t, l1, l2, bend) {
+    var dx = t[0] - s[0], dy = t[1] - s[1], d = Math.sqrt(dx * dx + dy * dy) || 1;
+    var dd = Math.max(Math.abs(l1 - l2) + 1, Math.min(l1 + l2 - 1, d));
+    var a = Math.atan2(dy, dx), c = (l1 * l1 + dd * dd - l2 * l2) / (2 * l1 * dd);
+    var ang = a + bend * Math.acos(Math.max(-1, Math.min(1, c)));
+    return { j: [s[0] + l1 * Math.cos(ang), s[1] + l1 * Math.sin(ang)], e: [s[0] + dd * Math.cos(a), s[1] + dd * Math.sin(a)] };
+  }
+
+  /* ----- Çizim ----- */
+  function gray(v) { return 'rgb(' + v + ',' + v + ',' + v + ')'; }
+  function headPath(g, jaw) {
+    var c = Math.cos(jaw), s = Math.sin(jaw);
+    function jx(x, y) { return 16 + (x - 16) * c - (y + 12) * s; }   // alt çene menteşesi
+    function jy(x, y) { return -12 + (x - 16) * s + (y + 12) * c; }
+    g.beginPath();
+    g.moveTo(32, 54);
+    g.bezierCurveTo(-18, 76, -74, 54, -74, 0);                       // ense → tepe
+    g.bezierCurveTo(-74, -40, -46, -63, -14, -65);                   // tepe → alın
+    g.bezierCurveTo(0, -66, 7, -60, 11, -55);                        // kaş
+    g.bezierCurveTo(15, -62, 19, -77, 28, -75);                      // burun
+    g.bezierCurveTo(34, -74, 34, -62, 32, -55);
+    g.bezierCurveTo(36, -56, 43, -53, 41, -46);                      // üst dudak
+    g.bezierCurveTo(40, -44, 39, -43, 39, -42);                      // ağız
+    g.lineTo(jx(39, -41), jy(39, -41));
+    g.bezierCurveTo(jx(46, -39), jy(46, -39), jx(45, -32), jy(45, -32), jx(41, -30), jy(41, -30)); // alt dudak
+    g.bezierCurveTo(jx(47, -27), jy(47, -27), jx(55, -22), jy(55, -22), jx(53, -13), jy(53, -13)); // çene
+    g.bezierCurveTo(jx(50, -4), jy(50, -4), 43, 6, 42, 22);          // çene altı → boyun
+    g.closePath();
+  }
+  function torsoPath(g, b) {
+    var u = -50 - 34 * b;                                            // karın şişkinliği
+    g.beginPath();
+    g.moveTo(-86, -28);
+    g.bezierCurveTo(-30, u, 34, u - 6, 68, -30);
+    g.bezierCurveTo(94, -8, 90, 32, 62, 40);
+    g.bezierCurveTo(22, 56, -44, 56, -92, 34);
+    g.closePath();
+  }
+  function limb(g, s, j, e, w1, w2, shade) {
+    g.strokeStyle = shade; g.lineCap = 'round'; g.lineJoin = 'round';
+    g.lineWidth = w1; g.beginPath(); g.moveTo(s[0], s[1]); g.lineTo(j[0], j[1]); g.stroke();
+    g.lineWidth = w2; g.beginPath(); g.moveTo(j[0], j[1]); g.lineTo(e[0], e[1]); g.stroke();
+  }
+  function hand(g, e, from, spread, shade, edge) {
+    var a = Math.atan2(e[1] - from[1], e[0] - from[0]);
+    g.save(); g.translate(e[0], e[1]); g.rotate(a);
+    g.strokeStyle = edge; g.lineCap = 'round'; g.lineWidth = 5;
+    for (var i = -1.5; i <= 1.5; i++) {                              // parmaklar
+      var f = i * (0.16 + 0.26 * spread);
+      g.beginPath(); g.moveTo(5, i * 3); g.lineTo(5 + 21 * Math.cos(f), i * 3 + 21 * Math.sin(f)); g.stroke();
+    }
+    g.lineWidth = 6;                                                 // başparmak
+    g.beginPath(); g.moveTo(1, -8); g.lineTo(8 + 6 * spread, -18 - 3 * spread); g.stroke();
+    g.fillStyle = shade; g.beginPath(); g.ellipse(2, 0, 11, 10, 0, 0, Math.PI * 2); g.fill();
+    g.restore();
+  }
+  function foot(g, e, from, shade, edge) {
+    var a = Math.atan2(e[1] - from[1], e[0] - from[0]) - 1.15;       // ayak bileği bükümü
+    g.save(); g.translate(e[0], e[1]); g.rotate(a);
+    g.fillStyle = edge; g.beginPath(); g.ellipse(14, 0, 22, 13, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = shade; g.beginPath(); g.ellipse(14, 0, 18, 9, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = edge;
+    for (var i = 0; i < 4; i++) { g.beginPath(); g.arc(35, -7 + i * 4.8, 2.4, 0, Math.PI * 2); g.fill(); }
+    g.restore();
+  }
+  function usDrawBaby(g, p, beat) {
+    var kN = ik(HIP_N, p.footN, 66, 62, -1), kF = ik(HIP_F, p.footF, 66, 62, -1);
+    var eN = ik(SH_N, p.handN, 52, 48, 1), eF = ik(SH_F, p.handF, 50, 46, 1);
+    U.pose = { p: p, footN: kN.e, footF: kF.e, handN: eN.e, handF: eF.e };
+
+    // Arkadaki kol ve bacak: daha soluk
+    limb(g, HIP_F, kF.j, kF.e, 31, 25, gray(135)); limb(g, HIP_F, kF.j, kF.e, 26, 20, gray(82));
+    foot(g, kF.e, kF.j, gray(82), gray(135));
+    limb(g, SH_F, eF.j, eF.e, 23, 19, gray(135)); limb(g, SH_F, eF.j, eF.e, 18, 14, gray(82));
+    hand(g, eF.e, eF.j, p.spread, gray(82), gray(135));
+
+    // Baş + gövde birleşik siluet: önce parlak kenar, sonra dolgu
+    function inHead(fn) {
+      g.save(); g.translate(NECK[0], NECK[1]); g.rotate(p.head); g.translate(HEAD_OFS[0], HEAD_OFS[1]); fn(); g.restore();
+    }
+    g.lineJoin = 'round'; g.strokeStyle = gray(242); g.lineWidth = 7;
+    torsoPath(g, p.belly); g.stroke();
+    inHead(function () { headPath(g, p.jaw); g.stroke(); });
+    g.fillStyle = gray(132);
+    torsoPath(g, p.belly); g.fill();
+    inHead(function () { headPath(g, p.jaw); g.fill(); });
+
+    // Kafa içi
+    inHead(function () {
+      g.fillStyle = gray(98); g.beginPath(); g.ellipse(-24, 0, 44, 48, 0, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = gray(190); g.lineWidth = 3;                    // beyin orta hattı
+      g.beginPath(); g.moveTo(-58, -6); g.quadraticCurveTo(-24, -14, 8, 2); g.stroke();
+      g.fillStyle = gray(170);                                       // koroid pleksus
+      g.beginPath(); g.ellipse(-36, 16, 13, 7, 0.3, 0, Math.PI * 2); g.fill();
+      g.fillStyle = gray(24);                                        // göz çukuru
+      g.beginPath(); g.arc(14, -36, 5.5, 0, Math.PI * 2); g.fill();
+      g.fillStyle = gray(210); g.beginPath(); g.arc(15, -37, 1.6, 0, Math.PI * 2); g.fill();
+      if (p.jaw > 0.02) {
+        g.fillStyle = gray(10); g.beginPath();
+        g.moveTo(16, -18); g.lineTo(41, -44); g.lineTo(39 + 26 * p.jaw, -30 + 20 * p.jaw); g.closePath(); g.fill();
+      }
+    });
+    // Omurga
+    for (var i = 0; i < 15; i++) {
+      var q = i / 14, sx = lerp(-84, 66, q), sy = 37 + 11 * Math.sin(q * Math.PI);
+      g.fillStyle = gray(i % 2 ? 215 : 250);
+      g.fillRect(sx - 4, sy - 3.5, 7.5, 7);
+      g.fillStyle = gray(150);
+      g.fillRect(sx - 3, sy - 15, 5.5, 4.5);
+    }
+    // Kaburgalar
+    g.strokeStyle = gray(165); g.lineWidth = 3; g.lineCap = 'round';
+    for (var rb = 0; rb < 5; rb++) {
+      var rx = -68 + rb * 14;
+      g.beginPath(); g.moveTo(rx, 26); g.quadraticCurveTo(rx - 9, -6, rx + 6, -32 - p.belly * 30); g.stroke();
+    }
+    // Kalp: kalp hızıyla atan koyu oda
+    var bs = 1 + 0.32 * beat;
+    g.fillStyle = gray(12); g.beginPath(); g.ellipse(-36, -8, 15 * bs, 12 * bs, 0.4, 0, Math.PI * 2); g.fill();
+    g.fillStyle = gray(Math.round(150 + 100 * beat)); g.fillRect(-37.5, -18 * bs, 3, 20 * bs);
+    // Mide ve mesane
+    g.fillStyle = gray(8);
+    g.beginPath(); g.ellipse(14, -10, 15, 11, 0.2, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(58, 12, 8, 7, 0, 0, Math.PI * 2); g.fill();
+
+    // Öndeki bacak ve kol
+    limb(g, HIP_N, kN.j, kN.e, 37, 30, gray(232)); limb(g, HIP_N, kN.j, kN.e, 32, 25, gray(138));
+    limb(g, HIP_N, kN.j, kN.e, 4, 4, gray(195));                     // uyluk ve kaval kemiği
+    foot(g, kN.e, kN.j, gray(138), gray(232));
+    limb(g, SH_N, eN.j, eN.e, 27, 22, gray(232)); limb(g, SH_N, eN.j, eN.e, 23, 18, gray(142));
+        hand(g, eN.e, eN.j, p.spread, gray(142), gray(232));
+  }
+  function bpt(p, x, y) {                       // gövde koordinatından ekrana
+    var c = Math.cos(p.rot), s = Math.sin(p.rot), k = U.k;
+    return [U.x + (x * c - y * s) * k, U.y + p.dy * k + (x * s + y * c) * k];
+  }
+  function usBeat() {                           // 0–1: son kalp vuruşundan bu yana sönümlenen nabız
+    var now = clock();
+    for (var j = H.beats.length - 1; j >= 0; j--) {
+      var r = H.beats[j].t + 0.26 * H.beats[j].p;
+      if (r <= now) return Math.exp(-(now - r) / H.beats[j].p * 5);
+    }
+    return 0;
+  }
+  function usMarker(p) {                        // görevin hedefi: birkaç saniye sonra hafifçe parlar
+    var m = MOVES[U.mi];
+    if (!m || !U.pose) return null;
+    if (m.id === 'kick') return [U.pose.footN[0] + 18, U.pose.footN[1] - 8];
+    if (m.id === 'wave') return U.pose.handN;
+    if (m.id === 'suck') return headPt(p, 42, -40);
+    if (m.id === 'yawn') return headPt(p, -30, -14);
+    if (m.id === 'hic') return [12, -14];
+    return null;
+  }
+  function usFrame(ts) {
+    if (!U.open) return;
+    U.raf = requestAnimationFrame(usFrame);
+    if (ts - (U.last || 0) < 30) return;        // ~30 kare/sn yeter, TV de yorulmasın
+    var dt = Math.min(0.1, (ts - (U.last || ts)) / 1000); U.last = ts;
+    var cv = $('usCv');
+    if (cv.clientWidth !== U.cw || cv.clientHeight !== U.ch) usBuild();
+
+    var t = usNow(), g = U.g, W = U.W, HH = U.H, lg = U.lg, i;
+    if (t > U.nextWig) { U.a.wig = t; U.nextWig = t + 4 + Math.random() * 6; }
+    U.x += (U.tx - U.x) * Math.min(1, dt * 1.6);
+    U.y += (U.ty - U.y) * Math.min(1, dt * 1.6);
+    var p = usPose(t), beat = usBeat();
+
+    // Bebek düşük çözünürlüğe çizilir; büyütülünce kendiliğinden yumuşar
+    lg.setTransform(1, 0, 0, 1, 0, 0);
+    lg.clearRect(0, 0, U.low.width, U.low.height);
+    lg.setTransform(0.5, 0, 0, 0.5, 0, 0);
+    // Kafatasının arkasına düşen akustik gölge
+    var hc = bpt(p, NECK[0] + HEAD_OFS[0] - 14, NECK[1] + HEAD_OFS[1]);
+    var ang = Math.atan2(hc[0] - U.ax, hc[1] - U.ay), wd = 50 * U.k / Math.max(1, Math.sqrt(Math.pow(hc[0] - U.ax, 2) + Math.pow(hc[1] - U.ay, 2)));
+    var rr = U.R * 1.05;
+    lg.fillStyle = 'rgba(0,0,0,.3)';
+    lg.beginPath();
+    lg.moveTo(hc[0] + 50 * U.k * Math.cos(ang), hc[1] - 50 * U.k * Math.sin(ang));
+    lg.lineTo(U.ax + rr * Math.sin(ang + wd), U.ay + rr * Math.cos(ang + wd));
+    lg.lineTo(U.ax + rr * Math.sin(ang - wd), U.ay + rr * Math.cos(ang - wd));
+    lg.lineTo(hc[0] - 50 * U.k * Math.cos(ang), hc[1] + 50 * U.k * Math.sin(ang));
+    lg.closePath(); lg.fill();
+    // Dokunuşun sıvıda yaptığı dalga
+    U.ripples = U.ripples.filter(function (r) { return t - r.t < 0.9; });
+    for (i = 0; i < U.ripples.length; i++) {
+      var rp = U.ripples[i], age = (t - rp.t) / 0.9;
+      lg.strokeStyle = 'rgba(255,255,255,' + (0.75 * (1 - age)).toFixed(3) + ')';
+      lg.lineWidth = 3 + 5 * age;
+      lg.beginPath(); lg.arc(rp.x, rp.y, (10 + 84 * age) * Math.max(U.k, 0.6), 0, Math.PI * 2); lg.stroke();
+    }
+    lg.translate(U.x, U.y + p.dy * U.k); lg.rotate(p.rot); lg.scale(U.k, U.k);
+    usDrawBaby(lg, p, beat);
+
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.globalCompositeOperation = 'source-over';
+    g.fillStyle = '#000'; g.fillRect(0, 0, W, HH);
+    g.save();
+    sector(g); g.clip();
+    g.drawImage(U.bg, 0, 0, W, HH);
+    g.drawImage(U.low, 0, 0, W, HH);
+    U.tick = (U.tick || 0) + 1;
+    g.globalCompositeOperation = 'multiply';
+    g.drawImage(U.spk[(U.tick >> 1) % SPK_N], 0, 0, W, HH);
+    g.restore();
+    g.globalCompositeOperation = 'source-over';
+
+    usOverlay(g, p, t, dt);
+    if (U.msgUntil && t > U.msgUntil) { U.msgUntil = 0; usMission(); }
+  }
+  function usOverlay(g, p, t, dt) {
+    var W = U.W, HH = U.H, fs = Math.max(11, Math.min(19, HH / 30)), i;
+    // Yelpaze kenarları ve derinlik cetveli
+    g.strokeStyle = 'rgba(151,226,207,.22)'; g.lineWidth = 1;
+    sector(g); g.stroke();
+    g.fillStyle = 'rgba(151,226,207,.75)';
+    for (i = 1; i < 10; i++) g.fillRect(W - 9 - (i % 5 ? 0 : 6), HH * i / 10, i % 5 ? 5 : 11, 1.5);
+
+    // Makine yazıları
+    g.font = '700 ' + fs + 'px Nunito,Arial,sans-serif';
+    g.textBaseline = 'top'; g.textAlign = 'left';
+    g.fillStyle = 'rgba(251,243,247,.85)';
+    for (i = 0; i < U.info.length; i++) g.fillText(U.info[i], 12, 11 + i * fs * 1.35);
+    g.textAlign = 'right';
+    g.fillStyle = '#f7a8c4';
+    g.fillText('💗 ' + Math.round(H.bpm) + ' atım/dk', W - 24, 11);
+    g.fillStyle = 'rgba(251,243,247,.85)';
+    if (U.est) g.fillText(U.est, W - 24, 11 + fs * 1.35);
+    g.textAlign = 'left';
+
+    // Görev işareti
+    if (t - U.lastHit > 3 && !U.msgUntil) {
+      var mk = usMarker(p);
+      if (mk) {
+        var q = bpt(p, mk[0], mk[1]), pul = (t * 0.9) % 1;
+        g.strokeStyle = 'rgba(255,204,158,' + (0.95 * (1 - pul)).toFixed(3) + ')';
+        g.lineWidth = 2.5;
+        g.beginPath(); g.arc(q[0], q[1], (12 + 26 * pul) * Math.max(U.k, 0.7), 0, Math.PI * 2); g.stroke();
+      }
+    }
+    // Kumanda imleci: ultrason kaliperi gibi
+    if (U.cur.on) {
+      var s = 13 * Math.max(U.k, 0.7);
+      g.strokeStyle = '#97e2cf'; g.lineWidth = 2.5;
+      g.beginPath();
+      g.moveTo(U.cur.x - s, U.cur.y); g.lineTo(U.cur.x + s, U.cur.y);
+      g.moveTo(U.cur.x, U.cur.y - s); g.lineTo(U.cur.x, U.cur.y + s);
+      g.stroke();
+    }
+    // Kalpler
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    U.hearts = U.hearts.filter(function (h) { return t - h.t < h.life; });
+    for (i = 0; i < U.hearts.length; i++) {
+      var h = U.hearts[i], a = (t - h.t) / h.life;
+      h.x += h.vx * dt; h.y += h.vy * dt; h.vy += 14 * dt;
+      g.globalAlpha = 1 - a * a;
+      g.font = Math.round(h.s) + 'px "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif';
+      g.fillText(h.e, h.x, h.y);
+    }
+    g.globalAlpha = 1;
+    g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  }
+
+  /* ----- Oyun ----- */
+  function usChips() {
+    var box = $('usChips'), html = '';
+    for (var i = 0; i < MOVES.length; i++) {
+      var m = MOVES[i], got = U.found[m.id];
+      html += '<div class="uschip' + (got ? ' got' : (i === U.mi ? ' todo' : '')) + '"><span class="emoji">' + m.e + '</span>' +
+              (got ? m.n + (U.count[m.id] > 1 ? ' ×' + U.count[m.id] : '') : '?') + '</div>';
+    }
+    box.innerHTML = html;
+  }
+  function usMission() {
+    var el = $('usTitle'), m = MOVES[U.mi];
+    el.className = 'ovt';
+    el.textContent = m ? m.ask : 'Hepsini buldun! Dokunmaya devam et 💗';
+    usChips();
+  }
+  function usBurst(n, x, y) {
+    var t = usNow(), set = ['💗', '💗', '💕', '✨'];
+    for (var i = 0; i < n; i++) {
+      var a = -Math.PI / 2 + (Math.random() - 0.5) * 2.4, v = (50 + Math.random() * 110) * Math.max(U.k, 0.7);
+      U.hearts.push({ t: t, life: 1.1 + Math.random() * 0.9, x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+                      s: (16 + Math.random() * 16) * Math.max(U.k, 0.8), e: set[i % set.length] });
+    }
+  }
+  function usTone(f0, f1, at, dur, vol) {
+    if (!H.ctx || !H.master) return;
+    var c = H.ctx, t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(H.master); o.start(t); o.stop(t + dur + 0.02);
+  }
+  function usDo(id, x, y) {
+    var t = usNow(), first = !U.found[id], m = null, i;
+    for (i = 0; i < MOVES.length; i++) if (MOVES[i].id === id) m = MOVES[i];
+    U.a[id] = t;
+    U.count[id] = (U.count[id] || 0) + 1;
+    U.found[id] = true;
+    while (MOVES[U.mi] && U.found[MOVES[U.mi].id]) U.mi++;
+    if (first) {
+      usBurst(9, x, y);
+      usTone(520, 780, 0, 0.14, 0.6); usTone(780, 1170, 0.12, 0.2, 0.6);
+      $('usTitle').className = 'ovt win';
+      $('usTitle').textContent = U.mi >= MOVES.length ? 'Hepsini buldun! 🎉' : m.ok;
+      U.msgUntil = t + 1.7;
+      if (U.mi >= MOVES.length) {               // final: kalp yağmuru ve el sallama
+        for (i = 0; i < 6; i++) usBurst(6, U.W * (0.25 + i * 0.1), U.H * 0.62);
+        U.a.wave = t + 0.5;
+        U.msgUntil = t + 3;
+      }
+    } else {
+      usBurst(2, x, y);
+    }
+    usChips();
+  }
+  function usTap(x, y) {
+    var t = usNow(), p = usPose(t), P = U.pose;
+    U.lastHit = t;
+    U.nextWig = t + 5 + Math.random() * 5;
+    U.ripples.push({ t: t, x: x, y: y });
+    usTone(300, 620, 0, 0.13, 0.5);
+
+    U.tapT.push(t);
+    U.tapT = U.tapT.filter(function (q) { return t - q < 1; });
+    if (U.tapT.length >= 3) { U.tapT = []; if (act('flip', t) < 0) { usDo('flip', x, y); return; } }
+    if (act('flip', t) >= 0 || !P) return;
+
+    // Dokunulan noktayı bebeğin gövde koordinatına çevir
+    var dx = (x - U.x) / U.k, dy = (y - (U.y + p.dy * U.k)) / U.k, c = Math.cos(-p.rot), s = Math.sin(-p.rot);
+    var lx = dx * c - dy * s, ly = dx * s + dy * c;
+    function near(q, r) { var a = lx - q[0], b = ly - q[1]; return a * a + b * b < r * r; }
+    function fresh(n, k) { var e = act(n, t); return e < 0 || e > k; }
+    var ft = function (f) { return [f[0] + 16, f[1] - 6]; };
+    var tol = Math.max(1, 0.75 / U.k);          // küçük ekranda parmak için daha geniş hedef
+
+    if (near(P.handN, 30 * tol) || near(P.handF, 26 * tol)) { if (fresh('wave', 0.5)) usDo('wave', x, y); return; }
+    if (near(ft(P.footN), 38 * tol) || near(ft(P.footF), 34 * tol) || near(P.footN, 30 * tol)) { if (fresh('kick', 0.6)) usDo('kick', x, y); return; }
+    if (near(headPt(p, 42, -40), 24 * tol)) { if (fresh('suck', 0.5)) usDo('suck', x, y); return; }
+    if (near(headPt(p, -18, -4), 66)) { if (fresh('yawn', 0.6)) usDo('yawn', x, y); return; }
+    if (lx > -88 && lx < 92 && ly > -62 && ly < 55) { if (fresh('hic', 0.7)) usDo('hic', x, y); return; }
+    if (near([100, -55], 62)) { if (fresh('kick', 0.6)) usDo('kick', x, y); return; }   // bacak boyu
+
+    // Boş sıvıya dokunuldu: o yöne doğru yüzer
+    U.tx = Math.max(U.homeX - U.W * 0.09, Math.min(U.homeX + U.W * 0.09, lerp(U.x, x, 0.6)));
+    U.ty = Math.max(U.homeY - U.H * 0.07, Math.min(U.homeY + U.H * 0.02, lerp(U.y, y, 0.6)));
+    U.a.swim = t;
+    U.a.poke = t;
+  }
+  function usOpen() {
+    if (U.open || H.open) return;
+    U.open = true;
+    $('usOv').hidden = false;
+    var gaF = (new Date() - start) / DAY, wk = Math.floor(gaF / 7), dy = Math.floor(gaF - wk * 7), gr = growth(Math.max(0, gaF));
+    var nm = CONFIG.name.replace(/’?mız$|'?mız$/, '');
+    $('usLabel').textContent = 'Ultrason · bebeğe dokun, hareket etsin 👶';
+    U.info = [nm, wk + ' hafta ' + dy + ' gün'];
+    U.est = gr ? 'yaklaşık ' + grams(gr.g) : '';
+    U.a = {}; U.tapT = []; U.ripples = []; U.hearts = []; U.found = {}; U.count = {}; U.mi = 0; U.msgUntil = 0;
+    U.cur.on = false; U.last = 0;
+    U.lastHit = usNow(); U.nextWig = usNow() + 3;
+    usBuild();
+    usMission();
+    startBeats(U.muted ? 0 : US_VOL);
+    U.raf = requestAnimationFrame(usFrame);
+    try { $('usCv').focus(); } catch (e) {}
+  }
+  function usClose() {
+    if (!U.open) return;
+    U.open = false;
+    $('usOv').hidden = true;
+    cancelAnimationFrame(U.raf);
+    stopBeats();
+    try { $('usBtn').focus(); } catch (e) {}
+  }
+  $('usBtn').addEventListener('click', usOpen);
+  $('usx').addEventListener('click', usClose);
+  $('usOv').addEventListener('click', function (e) { if (e.target === $('usOv')) usClose(); });
+  $('usSnd').addEventListener('click', function () {
+    U.muted = !U.muted;
+    if (H.master) H.master.gain.value = U.muted ? 0 : US_VOL;
+    $('usSnd').textContent = U.muted ? '🔇' : '🔊';
+    $('usSnd').setAttribute('aria-label', U.muted ? 'Sesi aç' : 'Sesi kapat');
+  });
+  $('usCv').addEventListener('click', function (e) {
+    var r = $('usCv').getBoundingClientRect();
+    U.cur.on = false;
+    usTap((e.clientX - r.left) / r.width * U.W, (e.clientY - r.top) / r.height * U.H);
+  });
+
   /* ---------- Kumanda ---------- */
   document.addEventListener('keydown', function (e) {
     var k = e.keyCode;
+    if (U.open) {                                                                             // ultrason ekranı açıkken
+      if (k === 8 || k === 27 || k === 461 || k === 10009 || k === 10182) { usClose(); e.preventDefault(); return; }
+      if (document.activeElement === $('usx') || document.activeElement === $('usSnd')) return;   // düğmeler kendi işini yapsın
+      if (k >= 37 && k <= 40) {
+        var st = U.H * 0.06;
+        if (U.cur.on) {
+          U.cur.x = Math.max(0, Math.min(U.W, U.cur.x + (k === 37 ? -st : k === 39 ? st : 0)));
+          U.cur.y = Math.max(0, Math.min(U.H, U.cur.y + (k === 38 ? -st : k === 40 ? st : 0)));
+        }
+        U.cur.on = true;
+        e.preventDefault();
+      } else if (k === 13 || k === 32) {
+        U.cur.on = true;
+        usTap(U.cur.x, U.cur.y);
+        e.preventDefault();
+      }
+      return;
+    }
     if (!H.open && k === 37) { show(page - 1); restartRotation(); e.preventDefault(); return; }       // sol
     if (!H.open && k === 39) { show(page + 1); restartRotation(); e.preventDefault(); return; }       // sağ
     var back = (k === 8 || k === 27 || k === 461 || k === 10009 || k === 10182);
@@ -1000,7 +1660,9 @@
       if (back || k === 13) { closeHeart(); e.preventDefault(); }
       return;
     }
+    if (k === 13 && document.activeElement === $('usBtn')) { usOpen(); e.preventDefault(); return; }
     if (k === 13) { openHeart(); e.preventDefault(); return; }                                // OK: kalbini dinle
+    if (k === 40 && !isMobile) { usOpen(); e.preventDefault(); return; }                      // aşağı: ultrason
     if (back) {
       e.preventDefault();
       try { window.close(); } catch (x) {}
