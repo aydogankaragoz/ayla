@@ -21,7 +21,7 @@
       radial-gradient(ellipse at 12% 8%,#3b2052 0%,rgba(59,32,82,0) 55%),
       radial-gradient(ellipse at 92% 95%,#45203d 0%,rgba(69,32,61,0) 50%),
       linear-gradient(160deg,var(--bg1),var(--bg2))}
-  .emoji{font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif;line-height:1}
+  .emoji{font-family:"Apple Color Emoji","Noto Color Emoji","Segoe UI Emoji",sans-serif;line-height:1}
 
   /* 1920x1080 sahne, pencereye göre ölçeklenir */
   #stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;
@@ -84,10 +84,9 @@
   .stat .s{font-size:18px;color:var(--dim);margin-top:6px;font-weight:600}
   .stat .v{font-family:Fraunces,Georgia,serif;font-size:56px;font-weight:700;line-height:1;white-space:nowrap;text-align:right}
   .stat .v .tl2{font-size:30px;letter-spacing:0}
+  .dg{display:inline-block;width:.64em;text-align:center}   /* Fraunces'te eşit genişlikte rakam yok; sayı titremesin */
   .stat .v small{font-family:Nunito,Arial,sans-serif;font-size:24px;font-weight:800;margin-left:6px;color:var(--muted)}
   .stat:first-child .v{color:var(--pink)} .stat:last-child .v{color:var(--mint)}
-  .tail,.tl2{transition:opacity .25s ease}
-  .blink{opacity:.35}
 
   .foot{display:grid;grid-template-columns:1.75fr 1fr;grid-column-gap:40px}
   .tl{padding:30px 44px 26px}
@@ -710,43 +709,70 @@
   var start = addDays(lmp, adj);              // döngüye göre düzeltilmiş "0. gün"
   var due = addDays(lmp, 280 + adj);
 
-  /* Her saniye: tam yüzdeyi anlık hesapla */
+  /* Yavaş kısım: halka ve çubuk gözle görülmeyecek kadar yavaş ilerler, sık güncellemeye gerek yok */
   function precise(now) {
     var ms = now - start;
     var pct = Math.max(0, Math.min(100, ms / TOTAL * 100));
-    var s = pct.toFixed(5).replace('.', ',');   // ör. 60,72345
-    var cut = s.indexOf(',') + 3;
-    $('pctMain').textContent = s.substring(0, cut);
-    $('pctTail').textContent = s.substring(cut);
     $('arc').setAttribute('stroke-dashoffset', (1118.4 * (1 - pct / 100)).toFixed(2));
     $('fill').style.width = pct + '%';
     $('now').style.left = pct + '%';
-
-    // Ağırlık ve boy: o anki dakikaya/saniyeye göre
     var g = growth(Math.max(0, ms / DAY));
-    if (g) {
-      $('wt').innerHTML = split(g.g, 4, 0) + '<small>g</small>';
-      $('len').innerHTML = split(g.cm, 6, 2) + '<small>cm</small>';
-      $('lenType').textContent = g.w < 20 ? 'baş–popo boyu' : 'baş–topuk boyu';
-    } else {
-      $('wt').textContent = '–'; $('len').textContent = '–'; $('lenType').textContent = '';
-    }
-    // değişen hanelere küçük bir "nefes" efekti
-    var tails = document.querySelectorAll('.tail,.tl2');
-    for (var i = 0; i < tails.length; i++) tails[i].className += ' blink';
-    setTimeout(function () {
-      var t = document.querySelectorAll('.blink');
-      for (var j = 0; j < t.length; j++) t[j].className = t[j].className.replace(' blink', '');
-    }, 250);
+    $('lenType').textContent = g ? (g.w < 20 ? 'baş–popo boyu' : 'baş–topuk boyu') : '';
   }
 
-  /* 1234.56789 → "1.234" + küçük ",5678" ; keep: virgülden sonra büyük yazılacak hane sayısı */
-  function split(v, decimals, keep) {
-    var s = v.toFixed(decimals), parts = s.split('.'), ip = parts[0];
-    ip = ip.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  /* Sürekli kısım: yüzde, ağırlık ve boy hanelerini anlık saatten hesapla */
+  function setText(node, s) { if (node.textContent !== s) node.textContent = s; }
+  function setDigits(node, s) {
+    var i, c;
+    if (node.childNodes.length !== s.length || node.firstChild.nodeType !== 1) {
+      node.textContent = '';
+      for (i = 0; i < s.length; i++) {
+        c = document.createElement('span');
+        if (s.charAt(i) !== ',') c.className = 'dg';
+        node.appendChild(c);
+      }
+    }
+    for (i = 0; i < s.length; i++) {
+      c = node.childNodes[i];
+      if (c.textContent !== s.charAt(i)) c.textContent = s.charAt(i);
+    }
+  }
+
+  /* 1234.56789 → büyük "1.234" + küçük ",56789" ; keep: virgülden sonra büyük yazılacak hane sayısı */
+  function liveNum(box, v, decimals, keep, unit) {
+    var parts = v.toFixed(decimals).split('.');
+    var ip = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     var big = ip + (keep ? ',' + parts[1].substring(0, keep) : '');
-    var small = (keep ? '' : ',') + parts[1].substring(keep);
-    return big + '<span class="tl2">' + small + '</span>';
+    if (box.getAttribute('data-big') !== big) {     // tam kısım nadiren değişir; DOM'u yalnızca o zaman kur
+      box.setAttribute('data-big', big);
+      box.innerHTML = big + '<span class="tl2"></span><small>' + unit + '</small>';
+    }
+    setDigits(box.firstElementChild, (keep ? '' : ',') + parts[1].substring(keep));
+  }
+
+  function live() {
+    var ms = Date.now() - start;
+    var s = Math.max(0, Math.min(100, ms / TOTAL * 100)).toFixed(6).replace('.', ',');   // ör. 60,723451
+    var cut = s.indexOf(',') + 3;
+    setText($('pctMain'), s.substring(0, cut));
+    setDigits($('pctTail'), s.substring(cut));
+    var g = growth(Math.max(0, ms / DAY));
+    if (g) {
+      liveNum($('wt'), g.g, 4, 0, 'g');
+      liveNum($('len'), g.cm, 6, 2, 'cm');
+    } else {
+      $('wt').removeAttribute('data-big'); setText($('wt'), '–');
+      $('len').removeAttribute('data-big'); setText($('len'), '–');
+    }
+  }
+
+  var liveLast = 0;
+  function liveLoop(ts) {
+    requestAnimationFrame(liveLoop);
+    if (ts - liveLast < 33) return;                 // ~30 kare/sn yeter, TV de yorulmasın
+    if ((!isMobile && page !== 0) || H.open || U.open) return;     // haneler görünmüyorken boşuna çalışma (mobilde sayfalar alt alta, hep görünür)
+    liveLast = ts;
+    live();
   }
 
   var lastDay = '';
@@ -820,6 +846,7 @@
     var key = midnight(now).getTime() + '-' + now.getHours();   // grafikler saatte bir tazelenir
     if (key !== lastDay) { lastDay = key; daily(now); }
     precise(now);
+    live();
     updateHeartBadge();
   }
 
@@ -1494,7 +1521,7 @@
       var h = U.hearts[i], a = (t - h.t) / h.life;
       h.x += h.vx * dt; h.y += h.vy * dt; h.vy += 14 * dt;
       g.globalAlpha = 1 - a * a;
-      g.font = Math.round(h.s) + 'px "Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif';
+      g.font = Math.round(h.s) + 'px "Apple Color Emoji","Noto Color Emoji","Segoe UI Emoji",sans-serif';
       g.fillText(h.e, h.x, h.y);
     }
     g.globalAlpha = 1;
@@ -1676,7 +1703,8 @@
   started = true;
   render();
   if (qp('page') === '2') show(1);
-  setInterval(render, 5000);   // her 5 saniyede bir büyüyor
+  setInterval(render, 5000);   // saat, halka ve çubuk
+  requestAnimationFrame(liveLoop);   // haneler sürekli büyüyor
   setInterval(pixelShift, 180000);
   restartRotation();
 })();
