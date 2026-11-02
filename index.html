@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#160e29">
 <title>Ayla’mız Geliyor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,16 +11,37 @@
 <style>
   :root{
     --bg1:#160e29; --bg2:#2a1740;
-    --ink:#fbf3f7; --muted:#c3b1d3; --dim:#8e7ba3;
+    --ink:#fbf3f7; --muted:#cfbfdd; --dim:#ab9abf;
     --pink:#f7a8c4; --peach:#ffcc9e; --mint:#97e2cf; --lilac:#c9b2ff;
+    --tint:255,255,255; --pk:247,168,196; --mt:151,226,207;
     --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.11);
+    --blob1:#3b2052; --blob2:#45203d; --g1:#7b3f8c; --g2:#9b4a6a; --glow:.35; --nowbg:#fbf3f7;
   }
+  /* Gündüz teması: cihaz açık moddaysa (?theme=light|dark ile sabitlenebilir) */
+  html[data-theme="light"]{
+    --bg1:#fff5f1; --bg2:#f5e8f6;
+    --ink:#2c1845; --muted:#5d4975; --dim:#6b5884;
+    --pink:#b82c6b; --peach:#a34d08; --mint:#0b7461; --lilac:#6239bd;
+    --tint:70,35,90; --pk:184,44,107; --mt:11,116,97;
+    --card:rgba(255,255,255,.72); --line:rgba(70,35,90,.14);
+    --blob1:#fbdbe6; --blob2:#e6d8fb; --g1:#f4c6dd; --g2:#d9c8f7; --glow:.6; --nowbg:#fff;
+  }
+  /* Kalp ve ultrason ekranları her zaman koyu */
+  html[data-theme="light"] .ov{
+    --ink:#fbf3f7; --muted:#cfbfdd; --dim:#ab9abf;
+    --pink:#f7a8c4; --peach:#ffcc9e; --mint:#97e2cf; --lilac:#c9b2ff;
+    --tint:255,255,255; --pk:247,168,196; --mt:151,226,207; --line:rgba(255,255,255,.11);
+  }
+  /* Gece: TV kısılır, kıpırtı azalır */
+  html[data-night] #stage{opacity:.55}
+  html[data-night] .glow{display:none}
+  html[data-night] .hb .emoji{animation:none}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:100%;height:100%;overflow:hidden;background:var(--bg1);color:var(--ink);
     font-family:Nunito,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
   body{background:
-      radial-gradient(ellipse at 12% 8%,#3b2052 0%,rgba(59,32,82,0) 55%),
-      radial-gradient(ellipse at 92% 95%,#45203d 0%,rgba(69,32,61,0) 50%),
+      radial-gradient(ellipse at 12% 8%,var(--blob1) 0%,transparent 55%),
+      radial-gradient(ellipse at 92% 95%,var(--blob2) 0%,transparent 50%),
       linear-gradient(160deg,var(--bg1),var(--bg2))}
   .emoji{font-family:"Apple Color Emoji","Noto Color Emoji","Segoe UI Emoji",sans-serif;line-height:1}
 
@@ -30,7 +52,7 @@
   header{display:flex;justify-content:space-between;align-items:center}
   .who{display:flex;align-items:center}
   .photo{width:132px;height:132px;border-radius:50%;object-fit:cover;margin-right:30px;
-    border:4px solid var(--pink);box-shadow:0 0 0 8px rgba(247,168,196,.18),0 10px 40px rgba(247,168,196,.35)}
+    border:4px solid var(--pink);box-shadow:0 0 0 8px rgba(var(--pk),.18),0 10px 40px rgba(var(--pk),.35)}
   h1{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:66px;letter-spacing:-1px;line-height:1}
   h1 .heart{font-size:54px;margin-left:10px;vertical-align:6px}
   .sub{color:var(--muted);font-size:25px;margin-top:12px;font-weight:600}
@@ -57,20 +79,18 @@
   .minor{font-size:25px;color:var(--muted);margin-top:10px;font-weight:600}
   .due{margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
   .due .v{font-size:38px;font-weight:800;margin-top:10px}
-  .due .s{font-size:22px;color:var(--dim);margin-top:6px;font-weight:600}
+  .due .s{font-size:24px;color:var(--muted);margin-top:6px;font-weight:600}
 
   .center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
   .ringbox{position:relative;width:410px;height:410px}
   .ringbox svg{position:absolute;left:0;top:0;width:410px;height:410px}
   .ringtext{position:absolute;left:0;top:0;width:410px;height:410px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .pct{font-family:Fraunces,Georgia,serif;font-size:84px;font-weight:700;line-height:1;letter-spacing:-2px;margin-top:6px;white-space:nowrap}
-  .pct .sign{font-size:46px;color:var(--pink);margin-right:2px}
-  .pct .tail{font-size:40px;color:var(--pink);letter-spacing:0;font-variant-numeric:tabular-nums}
-  .rate{font-size:18px;color:var(--dim);font-weight:700;margin-top:8px}
+  .pct{font-family:Fraunces,Georgia,serif;font-size:76px;font-weight:700;line-height:1;letter-spacing:-2px;margin-top:6px;white-space:nowrap}
+  .pct .sign{font-size:42px;color:var(--pink);margin-right:2px}
+  .pct .tail{font-size:35px;color:var(--pink);letter-spacing:0;font-variant-numeric:tabular-nums}
   .ga{font-size:30px;font-weight:800;margin-top:14px}
-  .ga2{font-size:20px;color:var(--muted);font-weight:600;margin-top:4px}
   .chips{margin-top:22px;display:flex;justify-content:center}
-  .chip{border:1px solid var(--line);background:rgba(255,255,255,.05);border-radius:999px;padding:10px 24px;
+  .chip{border:1px solid var(--line);background:rgba(var(--tint),.05);border-radius:999px;padding:10px 24px;
     font-size:22px;font-weight:700;margin:0 7px;white-space:nowrap}
   .chip.t{color:var(--mint)} .chip.m{color:var(--lilac)} .chip.d{color:var(--peach)}
 
@@ -81,7 +101,7 @@
   .fruit .txt span{display:block;font-size:21px;color:var(--muted);font-weight:600;margin-top:4px}
   .stats{margin-top:30px;padding-top:6px;border-top:1px solid var(--line)}
   .stat{display:flex;justify-content:space-between;align-items:center;padding:20px 0 0}
-  .stat .s{font-size:18px;color:var(--dim);margin-top:6px;font-weight:600}
+  .stat .s{font-size:20px;color:var(--muted);margin-top:6px;font-weight:600}
   .stat .v{font-family:Fraunces,Georgia,serif;font-size:56px;font-weight:700;line-height:1;white-space:nowrap;text-align:right}
   .stat .v .tl2{font-size:30px;letter-spacing:0}
   .dg{display:inline-block;width:.64em;text-align:center}   /* Fraunces'te eşit genişlikte rakam yok; sayı titremesin */
@@ -90,17 +110,17 @@
 
   .foot{display:grid;grid-template-columns:1.75fr 1fr;grid-column-gap:40px}
   .tl{padding:30px 44px 26px}
-  .track{position:relative;height:30px;border-radius:15px;margin-top:58px;background:rgba(255,255,255,.07)}
+  .track{position:relative;height:30px;border-radius:15px;margin-top:58px;background:rgba(var(--tint),.07)}
   .fill{position:absolute;left:0;top:0;height:30px;border-radius:15px;
     background:linear-gradient(90deg,var(--mint),var(--lilac) 45%,var(--pink) 75%,var(--peach))}
-  .divider{position:absolute;top:-6px;width:2px;height:42px;background:rgba(255,255,255,.22)}
+  .divider{position:absolute;top:-6px;width:2px;height:42px;background:rgba(var(--tint),.22)}
   .seglabel{position:absolute;top:-44px;font-size:19px;font-weight:800;color:var(--muted);letter-spacing:1px;white-space:nowrap}
-  .now{position:absolute;top:-9px;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:var(--ink);
-    box-shadow:0 0 0 8px rgba(247,168,196,.35),0 0 30px rgba(247,168,196,.7);display:flex;align-items:center;justify-content:center;font-size:24px}
+  .now{position:absolute;top:-9px;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:var(--nowbg);
+    box-shadow:0 0 0 8px rgba(var(--pk),.35),0 0 30px rgba(var(--pk),.7);display:flex;align-items:center;justify-content:center;font-size:24px}
   .ticks{position:relative;height:56px;margin-top:16px}
   .tick{position:absolute;top:0;transform:translateX(-50%);text-align:center;white-space:nowrap}
   .tick b{display:block;font-size:20px;font-weight:800}
-  .tick i{display:block;font-style:normal;font-size:17px;color:var(--dim);font-weight:600;margin-top:2px}
+  .tick i{display:block;font-style:normal;font-size:19px;color:var(--muted);font-weight:600;margin-top:2px}
   .tick.first{transform:none;text-align:left} .tick.last{transform:translateX(-100%);text-align:right}
   .week{padding:30px 40px;display:flex;flex-direction:column;justify-content:center}
   .note{font-size:28px;font-weight:700;line-height:1.35;margin-top:12px}
@@ -114,38 +134,38 @@
   .cnote{font-size:20px;color:var(--muted);font-weight:600}
   .chart{flex:1;min-height:0;margin-top:14px}
   .chart svg{width:100%;height:100%;display:block;overflow:visible}
-  .axis{font-family:Nunito,Arial,sans-serif;font-size:17px;font-weight:700;fill:#8e7ba3}
-  .dlabel{font-family:Nunito,Arial,sans-serif;font-size:21px;font-weight:800;fill:#fbf3f7}
-  .dsub{font-family:Nunito,Arial,sans-serif;font-size:17px;font-weight:700;fill:#c3b1d3}
+  .axis{font-family:Nunito,Arial,sans-serif;font-size:19px;font-weight:700;fill:var(--dim)}
+  .dlabel{font-family:Nunito,Arial,sans-serif;font-size:21px;font-weight:800;fill:var(--ink)}
+  .dsub{font-family:Nunito,Arial,sans-serif;font-size:18px;font-weight:700;fill:var(--muted)}
 
   .foot2{display:grid;grid-template-columns:2.2fr 1fr;grid-column-gap:40px}
   .journey{padding:30px 40px 24px}
   .strip{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;height:118px}
   .fw{width:62px;text-align:center;position:relative}
   .fw .emoji{font-size:34px;display:block;transition:all .5s}
-  .fw b{display:block;font-size:16px;color:var(--dim);font-weight:800;margin-top:10px}
+  .fw b{display:block;font-size:18px;color:var(--dim);font-weight:800;margin-top:10px}
   .fw.past .emoji{opacity:.95}
-  .fw.future .emoji{opacity:.22;-webkit-filter:grayscale(1);filter:grayscale(1)}
-  .fw.future b{opacity:.5}
+  .fw.future .emoji{opacity:.38;-webkit-filter:grayscale(1);filter:grayscale(1)}
+  .fw.future b{opacity:.7}
   .fw.cur .emoji{font-size:56px}
   .fw.cur b{color:var(--pink);font-size:18px}
   .fw.cur:before{content:"";position:absolute;left:50%;bottom:30px;width:78px;height:78px;margin-left:-39px;border-radius:50%;
-    background:rgba(247,168,196,.16);box-shadow:0 0 0 3px rgba(247,168,196,.55)}
+    background:rgba(var(--pk),.16);box-shadow:0 0 0 3px rgba(var(--pk),.55)}
   .nums{padding:30px 40px;display:flex;flex-direction:column;justify-content:center}
   .nrow{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
   .nrow:last-child{border-bottom:0}
   .nrow span{font-size:21px;color:var(--muted);font-weight:700}
   .nrow b{font-family:Fraunces,Georgia,serif;font-size:36px;font-weight:700}
 
-  .fine{position:absolute;right:84px;bottom:18px;font-size:15px;color:var(--dim);font-weight:600}
+  .fine{position:absolute;right:84px;bottom:14px;font-size:18px;color:var(--dim);font-weight:600}
   .dots{position:absolute;left:84px;bottom:14px;display:flex;align-items:center}
   .dot{font-size:16px;font-weight:800;color:var(--dim);margin-right:22px;letter-spacing:1px}
   .dot:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--dim);margin-right:8px;vertical-align:1px}
   .dot.on{color:var(--ink)} .dot.on:before{background:var(--pink)}
 
-  .glow{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;pointer-events:none}
-  .g1{width:420px;height:420px;background:#7b3f8c;left:-140px;top:420px;animation:drift 26s ease-in-out infinite alternate}
-  .g2{width:360px;height:360px;background:#9b4a6a;right:-120px;top:-120px;animation:drift 32s ease-in-out infinite alternate-reverse}
+  .glow{position:absolute;border-radius:50%;filter:blur(60px);opacity:var(--glow);pointer-events:none}
+  .g1{width:420px;height:420px;background:var(--g1);left:-140px;top:420px;animation:drift 26s ease-in-out infinite alternate}
+  .g2{width:360px;height:360px;background:var(--g2);right:-120px;top:-120px;animation:drift 32s ease-in-out infinite alternate-reverse}
   @keyframes drift{from{transform:translate(0,0)}to{transform:translate(120px,-80px)}}
 
   /* ===================== MOBİL ===================== */
@@ -156,8 +176,8 @@
     padding:20px 16px 28px;padding-top:max(20px,env(safe-area-inset-top))}
   html.m header{display:flex;flex-wrap:wrap;align-items:center;margin-bottom:18px}
   html.m .who{flex:1 1 100%}
-  html.m .photo{width:72px;height:72px;margin-right:16px;border-width:3px;box-shadow:0 0 0 5px rgba(247,168,196,.18),0 6px 20px rgba(247,168,196,.3)}
-  html.m h1{font-size:31px;letter-spacing:-.5px}
+  html.m .photo{width:72px;height:72px;margin-right:16px;border-width:3px;box-shadow:0 0 0 5px rgba(var(--pk),.18),0 6px 20px rgba(var(--pk),.3)}
+  html.m h1{font-size:28px;letter-spacing:-.5px;white-space:nowrap}
   html.m h1 .heart{font-size:24px;margin-left:6px;vertical-align:3px}
   html.m .clock{text-align:left;display:flex;align-items:baseline;margin:6px 0 0 88px}
   html.m .clock .time{font-size:22px;margin-right:10px}
@@ -178,9 +198,7 @@
   html.m .pct{font-size:50px;letter-spacing:-1px;margin-top:4px}
   html.m .pct .sign{font-size:28px}
   html.m .pct .tail{font-size:25px}
-  html.m .rate{font-size:11px;margin-top:5px}
   html.m .ga{font-size:19px;margin-top:8px}
-  html.m .ga2{font-size:13px;margin-top:2px}
   html.m .chips{margin-top:16px;flex-wrap:wrap}
   html.m .chip{font-size:14px;padding:6px 13px;margin:0 3px}
   html.m .fruit{margin-top:12px}
@@ -198,7 +216,7 @@
   html.m .fill{height:18px;border-radius:9px}
   html.m .divider{top:-4px;height:26px}
   html.m .seglabel{font-size:10px;top:-28px;letter-spacing:.5px}
-  html.m .now{width:32px;height:32px;margin-left:-16px;top:-7px;font-size:16px;box-shadow:0 0 0 5px rgba(247,168,196,.35),0 0 18px rgba(247,168,196,.7)}
+  html.m .now{width:32px;height:32px;margin-left:-16px;top:-7px;font-size:16px;box-shadow:0 0 0 5px rgba(var(--pk),.35),0 0 18px rgba(var(--pk),.7)}
   html.m .ticks{height:36px;margin-top:12px}
   html.m .tick b{font-size:11px}
   html.m .tick i,html.m .tick.mid{display:none}
@@ -230,23 +248,23 @@
   html.m .fine{position:static;text-align:center;font-size:12px;margin-top:6px}
 
   /* ===== Kalp butonu + dinleme ekranı ===== */
-  .hb{display:flex;align-items:center;background:rgba(247,168,196,.1);border:2px solid rgba(247,168,196,.45);color:var(--ink);
+  .hb{display:flex;align-items:center;background:rgba(var(--pk),.1);border:2px solid rgba(var(--pk),.45);color:var(--ink);
     border-radius:999px;padding:14px 32px 14px 22px;font-family:inherit;cursor:pointer;margin-left:auto;margin-right:52px;outline:none;text-align:left}
-  .hb:hover,.hb:focus{background:rgba(247,168,196,.2);border-color:var(--pink);box-shadow:0 0 0 6px rgba(247,168,196,.15)}
+  .hb:hover,.hb:focus{background:rgba(var(--pk),.2);border-color:var(--pink);box-shadow:0 0 0 6px rgba(var(--pk),.15)}
   .hb .emoji{font-size:44px;margin-right:16px;animation:hpulse .42s infinite}
   .hb b{font-family:Fraunces,Georgia,serif;font-size:40px;font-weight:700}
   .hb .u{font-size:20px;color:var(--muted);font-weight:700;margin-left:6px}
   .hb i{display:block;font-style:normal;font-size:17px;color:var(--pink);font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-top:2px}
   @keyframes hpulse{0%{transform:scale(1)}14%{transform:scale(1.22)}28%{transform:scale(1)}42%{transform:scale(1.1)}56%,100%{transform:scale(1)}}
 
-  .ov{position:fixed;left:0;top:0;right:0;bottom:0;z-index:50;background:rgba(12,7,22,.86);display:flex;align-items:center;justify-content:center;
+  .ov{color:var(--ink);position:fixed;left:0;top:0;right:0;bottom:0;z-index:50;background:rgba(12,7,22,.86);display:flex;align-items:center;justify-content:center;
     -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
   .ov[hidden]{display:none}
   .ovc{width:94vw;max-width:1180px;background:linear-gradient(160deg,#25163a,#1a1029);border:1px solid var(--line);border-radius:34px;
     padding:34px 44px 28px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
   .ovh{display:flex;justify-content:space-between;align-items:flex-start}
   .ovt{font-family:Fraunces,Georgia,serif;font-size:40px;font-weight:700;margin-top:6px}
-  .ovx{background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--ink);width:56px;height:56px;border-radius:50%;font-size:24px;cursor:pointer;font-family:inherit}
+  .ovx{background:rgba(var(--tint),.08);border:1px solid var(--line);color:var(--ink);width:56px;height:56px;border-radius:50%;font-size:24px;cursor:pointer;font-family:inherit}
   .ovx:focus,.ovx:hover{border-color:var(--pink);outline:none}
   .ovbpm{display:flex;align-items:center;margin:16px 0 14px}
   .ovbpm .emoji{font-size:84px;margin-right:24px;transition:transform .12s ease}
@@ -269,18 +287,17 @@
     .ovside span,.ovside b{display:inline} .ovside b{font-size:13px}
     #ecg{height:200px;border-radius:14px} .ovf{font-size:12px}
   }
-  html.m .clock{order:2}
-  html.m .hb{order:3;width:100%;margin:14px 0 0;justify-content:center;padding:10px 18px}
-  html.m .hb .emoji{font-size:30px;margin-right:12px}
-  html.m .hb b{font-size:26px} html.m .hb .u{font-size:14px} html.m .hb i{font-size:12px;letter-spacing:1.5px}
+  html.m .clock{order:2;flex:1 1 100%}
+  html.m .hb{order:3;flex:1 1 0;min-width:0;margin:14px 0 0;justify-content:center;padding:9px 6px;white-space:nowrap}
+  html.m .hb .emoji{font-size:26px;margin-right:8px}
+  html.m .hb b{font-size:26px} html.m .hb .u{font-size:12px} html.m .hb i{font-size:10px;letter-spacing:.8px}
 
   /* ===== Ultrason oyunu ===== */
   #heartBtn{margin-right:20px}
-  .hb.us{margin-left:0;margin-right:44px;background:rgba(151,226,207,.1);border-color:rgba(151,226,207,.45);white-space:nowrap}
-  .hb.us:hover,.hb.us:focus{background:rgba(151,226,207,.2);border-color:var(--mint);box-shadow:0 0 0 6px rgba(151,226,207,.15)}
+  .hb.us{margin-left:0;margin-right:44px;background:rgba(var(--mt),.1);border-color:rgba(var(--mt),.45);white-space:nowrap}
+  .hb.us:hover,.hb.us:focus{background:rgba(var(--mt),.2);border-color:var(--mint);box-shadow:0 0 0 6px rgba(var(--mt),.15)}
   .hb.us .emoji{animation:usnudge 3.2s ease-in-out infinite}
   .hb.us i{color:var(--mint)}
-  .hb.us .u{margin-left:1px}
   @keyframes usnudge{0%,70%,100%{transform:rotate(0)}76%{transform:rotate(-12deg)}84%{transform:rotate(10deg)}92%{transform:rotate(-5deg)}}
   .usc{max-width:1240px;max-height:100%;overflow-y:auto;padding:26px 40px 22px}
   .usbtns{display:flex;flex:none;margin-left:20px}
@@ -289,12 +306,12 @@
   #usTitle.win{color:var(--mint)}
   #usCv{display:block;width:100%;height:54vh;max-height:600px;margin-top:14px;border-radius:20px;background:#000;border:1px solid var(--line);
     cursor:pointer;outline:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
-  #usCv:focus{border-color:rgba(151,226,207,.5)}
+  #usCv:focus{border-color:rgba(var(--mt),.5)}
   .uschips{display:grid;grid-template-columns:repeat(6,1fr);grid-column-gap:10px;grid-row-gap:8px;margin-top:14px}
   .uschip{display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:999px;border:1px solid var(--line);
     font-size:18px;font-weight:800;color:var(--dim);white-space:nowrap}
   .uschip .emoji{font-size:22px;margin-right:8px;filter:grayscale(1);opacity:.45}
-  .uschip.got{color:var(--ink);border-color:rgba(151,226,207,.55);background:rgba(151,226,207,.12)}
+  .uschip.got{color:var(--ink);border-color:rgba(var(--mt),.55);background:rgba(var(--mt),.12)}
   .uschip.got .emoji{filter:none;opacity:1}
   .uschip.todo{border-color:var(--peach);color:var(--peach)}
   @media (max-height:760px){ #usCv{height:46vh} #usTitle{font-size:28px} .usc{padding:18px 32px 14px} }
@@ -306,8 +323,43 @@
     .uschip{font-size:12px;padding:5px 2px} .uschip .emoji{font-size:15px;margin-right:4px}
     .usc .usk{display:none}
   }
-  html.m #heartBtn{margin-right:0}
-  html.m .hb.us{margin:8px 0 0}
+  html.m #heartBtn{margin-right:8px}
+  html.m .hb.us{margin:14px 0 0}
+
+  /* ===== Mobil özet ===== */
+  .hero{display:none}
+  html.m .hero{display:grid;grid-template-columns:auto 1fr;grid-column-gap:18px;align-items:end}
+  .hnum{font-family:Fraunces,Georgia,serif;font-size:60px;line-height:.95;font-weight:700;color:var(--peach);letter-spacing:-1px}
+  .hsub{font-size:14px;font-weight:700;color:var(--muted);margin-top:6px}
+  .hero .hr{text-align:right;min-width:0}
+  html.m .hero .pct{font-size:36px;letter-spacing:-.5px;margin:0}
+  html.m .hero .pct .sign{font-size:21px} html.m .hero .pct .tail{font-size:18px}
+  .hero .hw{grid-column:1 / 3;display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .hero .hw .v{font-family:Fraunces,Georgia,serif;font-size:32px;font-weight:700;color:var(--pink);white-space:nowrap}
+  .hero .hw .v .tl2{font-size:18px}
+  .hero .hw .v small{font-family:Nunito,Arial,sans-serif;font-size:14px;font-weight:800;margin-left:4px;color:var(--muted)}
+  /* Özette olan sayaç, kartta tekrar etmesin */
+  html.m .count>.label,html.m .count .huge,html.m .count .unit,html.m .count .minor{display:none}
+  html.m .count .due{margin:0;padding:0;border:0}
+  @media (max-width:359px){ html.m h1{font-size:23px} html.m h1 .heart{font-size:19px} html.m .photo{width:60px;height:60px;margin-right:12px} html.m .hb .u{display:none} }
+
+  /* ===== Kilometre taşı kutlaması ===== */
+  .cele{position:fixed;left:50%;bottom:7vh;z-index:40;display:flex;align-items:center;width:-webkit-max-content;width:max-content;max-width:92vw;
+    padding:.6em 1.3em .6em .8em;font-size:clamp(17px,2.2vw,42px);background:var(--bg2);color:var(--ink);
+    border:2px solid var(--pink);border-radius:999px;box-shadow:0 12px 50px rgba(0,0,0,.35);
+    transform:translateX(-50%);animation:celein .6s ease both}
+  .cele[hidden]{display:none}
+  .cele.out{animation:celeout .6s ease both}
+  .cele .emoji{font-size:1.5em;margin-right:.45em}
+  .cele b{display:block;font-family:Fraunces,Georgia,serif;font-weight:700;line-height:1.15}
+  .cele i{display:block;font-style:normal;font-size:.55em;font-weight:700;color:var(--muted);margin-top:.2em}
+  @keyframes celein{from{opacity:0;transform:translate(-50%,40%)}to{opacity:1;transform:translate(-50%,0)}}
+  @keyframes celeout{from{opacity:1;transform:translate(-50%,0)}to{opacity:0;transform:translate(-50%,40%)}}
+  .fly{position:fixed;bottom:-8vh;z-index:39;font-size:clamp(22px,3vw,56px);pointer-events:none;animation:celefly 5s ease-out both}
+  @keyframes celefly{0%{transform:translateY(0) scale(.7);opacity:0}12%{opacity:1}80%{opacity:1}100%{transform:translateY(-100vh) scale(1.15) rotate(18deg);opacity:0}}
+
+  /* ===== Doğumdan sonra ===== */
+  html[data-born] .hb,html[data-born] .dots,html[data-born] #p2,html[data-born] .chips,html[data-born] .hero .hr,html[data-born] .fine{display:none}
 </style>
 </head>
 <body>
@@ -323,11 +375,11 @@
     </div>
     <button class="hb" id="heartBtn" type="button">
       <span class="emoji" id="hbIcon">💗</span>
-      <span><b id="bpm">–</b><span class="u">atım/dk</span><i>Kalbini dinle ▸</i></span>
+      <span><b id="bpm">–</b><span class="u">ort. atım/dk</span><i>Kalbini dinle ▸</i></span>
     </button>
     <button class="hb us" id="usBtn" type="button">
       <span class="emoji">👶</span>
-      <span><b id="usWk">–</b><span class="u">. hafta</span><i>Ultrasona bak ▸</i></span>
+      <span><b id="usWk">–</b><span class="u">hafta</span><i>Ultrasona bak ▸</i></span>
     </button>
     <div class="clock">
       <div class="time" id="time">--:--</div>
@@ -335,17 +387,23 @@
     </div>
   </header>
 
+  <section class="card hero" id="hero">
+    <div><div class="hnum" id="heroLeft">–</div><div class="hsub" id="heroUnit"></div></div>
+    <div class="hr"><div class="pct"><span class="sign">%</span><span id="heroPctMain"></span><span class="tail" id="heroPctTail"></span></div><div class="hsub">tamamlandı</div></div>
+    <div class="hw"><div class="label">Ağırlık</div><div class="v" id="heroWt">–</div></div>
+  </section>
+
   <div id="pages">
     <!-- ===== Sayfa 1: Bugün ===== -->
     <div class="page on" id="p1">
       <div class="row3">
         <section class="card count">
-          <div class="label">Doğuma</div>
+          <div class="label" id="countLabel">Doğuma</div>
           <div class="huge" id="left">–</div>
           <div class="unit" id="leftUnit">gün kaldı</div>
           <div class="minor" id="leftWeeks"></div>
           <div class="due">
-            <div class="label">Tahmini doğum tarihi</div>
+            <div class="label" id="dueLabel">Tahmini doğum tarihi</div>
             <div class="v" id="due"></div>
             <div class="s" id="dueWindow"></div>
           </div>
@@ -356,22 +414,20 @@
             <svg viewBox="0 0 410 410">
               <defs>
                 <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#97e2cf"/>
-                  <stop offset=".5" stop-color="#f7a8c4"/>
-                  <stop offset="1" stop-color="#ffcc9e"/>
+                  <stop offset="0" style="stop-color:var(--mint)"/>
+                  <stop offset=".5" style="stop-color:var(--pink)"/>
+                  <stop offset="1" style="stop-color:var(--peach)"/>
                 </linearGradient>
               </defs>
-              <circle cx="205" cy="205" r="178" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="24"/>
+              <circle cx="205" cy="205" r="178" fill="none" style="stroke:rgba(var(--tint),.08)" stroke-width="24"/>
               <circle id="arc" cx="205" cy="205" r="178" fill="none" stroke="url(#rg)" stroke-width="24"
                       stroke-linecap="round" transform="rotate(-90 205 205)"
                       stroke-dasharray="1118.4" stroke-dashoffset="1118.4" style="transition:stroke-dashoffset 2.5s ease"/>
             </svg>
             <div class="ringtext">
-              <div class="label">Tamamlanan</div>
+              <div class="label" id="ringLabel">Tamamlanan</div>
               <div class="pct"><span class="sign">%</span><span id="pctMain">0,0</span><span class="tail" id="pctTail">000</span></div>
-              <div class="rate" id="rate"></div>
               <div class="ga" id="ga"></div>
-              <div class="ga2" id="ga2"></div>
             </div>
           </div>
           <div class="chips">
@@ -382,10 +438,10 @@
         </section>
 
         <section class="card size">
-          <div class="label">Şu an boyutu</div>
+          <div class="label" id="sizeLabel">Şu an boyutu</div>
           <div class="fruit"><div class="emoji" id="fruitEmoji">🌱</div><div class="txt" id="fruitTxt"></div></div>
           <div class="stats">
-            <div class="stat"><div><div class="label">Ağırlık</div><div class="s">ortalama tahmin</div></div><div class="v" id="wt">–</div></div>
+            <div class="stat"><div><div class="label">Ağırlık</div><div class="s" id="wtSub">ortalama tahmin</div></div><div class="v" id="wt">–</div></div>
             <div class="stat"><div><div class="label">Boy</div><div class="s" id="lenType"></div></div><div class="v" id="len">–</div></div>
           </div>
         </section>
@@ -442,6 +498,8 @@
   <div class="fine">Değerler ortalamadır; doktorunuzun ölçümleri esastır.</div>
 </div>
 
+<div class="cele" id="cele" role="status" hidden><span class="emoji" id="celeE"></span><div><b id="celeT"></b><i id="celeS"></i></div></div>
+
 <div class="ov" id="ov" hidden>
   <div class="ovc">
     <div class="ovh">
@@ -475,7 +533,10 @@
 <script>
 (function () {
   /* ==== AYARLAR ====  URL ile de değiştirilebilir: ?lmp=2026-05-13&cycle=30&name=Kızımız&rotate=25 */
-  var CONFIG = { lmp: '2026-05-13', cycle: 30, name: 'Ayla’mız', rotate: 25 };
+  var CONFIG = { lmp: '2026-05-13', cycle: 30, name: 'Ayla’mız', rotate: 25,
+                 theme: 'auto',   // auto: cihazın açık/koyu ayarı; light | dark: sabit
+                 night: true,     // 22:00–07:00 arası koyu; TV'de ayrıca kısık
+                 born: '', bornG: 0, bornCm: 0 };   // doğunca: ?born=2027-02-18&bornG=3300&bornCm=50
 
   function qp(k) {
     var m = new RegExp('[?&]' + k + '=([^&]*)').exec(location.search);
@@ -485,6 +546,11 @@
   if (qp('cycle')) CONFIG.cycle = parseInt(qp('cycle'), 10) || 28;
   if (qp('name')) CONFIG.name = qp('name');
   if (qp('rotate') !== null) CONFIG.rotate = parseInt(qp('rotate'), 10) || 0;
+  if (qp('theme')) CONFIG.theme = qp('theme');
+  if (qp('night') === '0') CONFIG.night = false;
+  if (qp('born')) CONFIG.born = qp('born');
+  if (qp('bornG')) CONFIG.bornG = parseFloat(qp('bornG')) || 0;
+  if (qp('bornCm')) CONFIG.bornCm = parseFloat(qp('bornCm')) || 0;
 
   var DAY = 864e5, TOTAL = 280 * DAY;
   var MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
@@ -585,6 +651,9 @@
     return { svg: svg, W: W, H: H };
   }
 
+  function V(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function A(name, a) { return 'rgba(' + V(name) + ',' + a + ')'; }
+
   /* Ağırlık eğrisi: geçmiş dolu çizgi, gelecek kesikli */
   function drawWeight(ga, gaF) {
     var c = makeSvg($('wChart')), svg = c.svg;
@@ -595,11 +664,11 @@
 
     var defs = el('defs', {}, svg);
     var lg = el('linearGradient', { id: 'wArea', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
-    el('stop', { offset: 0, 'stop-color': '#f7a8c4', 'stop-opacity': .32 }, lg);
-    el('stop', { offset: 1, 'stop-color': '#f7a8c4', 'stop-opacity': 0 }, lg);
+    el('stop', { offset: 0, 'stop-color': V('--pink'), 'stop-opacity': .32 }, lg);
+    el('stop', { offset: 1, 'stop-color': V('--pink'), 'stop-opacity': 0 }, lg);
 
     for (var kg = 0; kg <= 3; kg++) {
-      el('line', { x1: L, x2: L + pw, y1: Y(kg * 1000), y2: Y(kg * 1000), stroke: 'rgba(255,255,255,' + (kg ? .07 : .18) + ')', 'stroke-width': 1 }, svg);
+      el('line', { x1: L, x2: L + pw, y1: Y(kg * 1000), y2: Y(kg * 1000), stroke: A('--tint', kg ? .1 : .22), 'stroke-width': 1 }, svg);
       el('text', { x: L - 14, y: Y(kg * 1000) + 6, 'text-anchor': 'end', 'class': 'axis' }, svg, kg ? kg + ' kg' : '0');
     }
     for (var w = 8; w <= 40; w += (isMobile ? 8 : 4)) {
@@ -618,20 +687,20 @@
     area = past + ' L' + X(now).toFixed(1) + ',' + Y(0) + ' L' + X(x0) + ',' + Y(0) + ' Z';
 
     el('path', { d: area, fill: 'url(#wArea)' }, svg);
-    el('path', { d: fut, fill: 'none', stroke: 'rgba(255,255,255,.28)', 'stroke-width': 2.5, 'stroke-dasharray': '7 8', 'stroke-linecap': 'round' }, svg);
-    el('path', { d: past, fill: 'none', stroke: '#f7a8c4', 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+    el('path', { d: fut, fill: 'none', stroke: A('--tint', .32), 'stroke-width': 2.5, 'stroke-dasharray': '7 8', 'stroke-linecap': 'round' }, svg);
+    el('path', { d: past, fill: 'none', stroke: V('--pink'), 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
 
     // bugün
     var nx = X(now), ny = Y(gAt(now * 7));
-    el('line', { x1: nx, x2: nx, y1: ny + 12, y2: Y(0), stroke: 'rgba(247,168,196,.45)', 'stroke-width': 2, 'stroke-dasharray': '3 5' }, svg);
-    el('circle', { cx: nx, cy: ny, r: 13, fill: 'rgba(247,168,196,.25)' }, svg);
-    el('circle', { cx: nx, cy: ny, r: 7, fill: '#fbf3f7', stroke: '#160e29', 'stroke-width': 2 }, svg);
+    el('line', { x1: nx, x2: nx, y1: ny + 12, y2: Y(0), stroke: A('--pk', .5), 'stroke-width': 2, 'stroke-dasharray': '3 5' }, svg);
+    el('circle', { cx: nx, cy: ny, r: 13, fill: A('--pk', .25) }, svg);
+    el('circle', { cx: nx, cy: ny, r: 7, fill: V('--ink'), stroke: V('--bg1'), 'stroke-width': 2 }, svg);
     el('text', { x: nx, y: ny - 46, 'text-anchor': 'middle', 'class': 'dlabel' }, svg, 'Bugün · ' + grams(gAt(gaF)));
     el('text', { x: nx, y: ny - 22, 'text-anchor': 'middle', 'class': 'dsub' }, svg, (Math.floor(ga / 7)) + ' hafta ' + (ga % 7) + ' gün');
 
     // uç etiket
     var ex = X(40), ey = Y(gAt(280));
-    el('circle', { cx: ex, cy: ey, r: 6, fill: '#ffcc9e' }, svg);
+    el('circle', { cx: ex, cy: ey, r: 6, fill: V('--peach') }, svg);
     el('text', { x: ex - 4, y: ey - 22, 'text-anchor': 'end', 'class': 'dlabel' }, svg, 'Doğumda ~' + grams(gAt(280)));
   }
 
@@ -642,7 +711,7 @@
     var w0 = 9, w1 = 40, yMax = 240, n = w1 - w0 + 1, slot = pw / n, bw = slot - 4;
     function Y(g) { return T + ph - g / yMax * ph; }
     for (var g = 0; g <= 200; g += 100) {
-      el('line', { x1: L, x2: L + pw, y1: Y(g), y2: Y(g), stroke: 'rgba(255,255,255,' + (g ? .07 : .18) + ')', 'stroke-width': 1 }, svg);
+      el('line', { x1: L, x2: L + pw, y1: Y(g), y2: Y(g), stroke: A('--tint', g ? .1 : .22), 'stroke-width': 1 }, svg);
       el('text', { x: L - 12, y: Y(g) + 6, 'text-anchor': 'end', 'class': 'axis' }, svg, g ? '+' + g + ' g' : '0');
     }
     var cur = Math.floor(ga / 7) + 1; // içinde bulunduğumuz hafta
@@ -650,7 +719,7 @@
     for (var w = w0; w <= w1; w++) {
       var v = Math.round(gAt(w * 7) - gAt((w - 1) * 7));
       var x = L + (w - w0) * slot + 2, y = Y(v), h = Y(0) - y;
-      var fill = w < cur ? '#c9b2ff' : (w === cur ? '#f7a8c4' : 'rgba(255,255,255,.12)');
+      var fill = w < cur ? V('--lilac') : (w === cur ? V('--pink') : A('--tint', .14));
       el('rect', { x: x, y: y, width: bw, height: Math.max(h, 2), rx: 3, fill: fill }, svg);
       if (w === cur) { curVal = v; curX = x + bw / 2; curY = y; }
       if (w % (isMobile ? 8 : 4) === 0) el('text', { x: x + bw / 2, y: T + ph + 30, 'text-anchor': 'middle', 'class': 'axis' }, svg, w + '. hf');
@@ -658,7 +727,7 @@
     if (cur >= w0 && cur <= w1) {
       var anchor = curX > L + pw * .7 ? 'end' : (curX < L + pw * .3 ? 'start' : 'middle');
       var ly = T - 8;
-      el('line', { x1: curX, x2: curX, y1: ly + 12, y2: curY - 8, stroke: 'rgba(247,168,196,.6)', 'stroke-width': 2, 'stroke-dasharray': '3 5' }, svg);
+      el('line', { x1: curX, x2: curX, y1: ly + 12, y2: curY - 8, stroke: A('--pk', .6), 'stroke-width': 2, 'stroke-dasharray': '3 5' }, svg);
       el('text', { x: curX, y: ly, 'text-anchor': anchor, 'class': 'dlabel' }, svg, 'Bu hafta +' + curVal + ' g');
     }
     $('gTitle').textContent = 'Büyüme her hafta hızlanıyor';
@@ -712,10 +781,11 @@
   /* Yavaş kısım: halka ve çubuk gözle görülmeyecek kadar yavaş ilerler, sık güncellemeye gerek yok */
   function precise(now) {
     var ms = now - start;
-    var pct = Math.max(0, Math.min(100, ms / TOTAL * 100));
+    var pct = isBorn() ? 100 : Math.max(0, Math.min(100, ms / TOTAL * 100));
     $('arc').setAttribute('stroke-dashoffset', (1118.4 * (1 - pct / 100)).toFixed(2));
     $('fill').style.width = pct + '%';
     $('now').style.left = pct + '%';
+    if (isBorn()) return;
     var g = growth(Math.max(0, ms / DAY));
     $('lenType').textContent = g ? (g.w < 20 ? 'baş–popo boyu' : 'baş–topuk boyu') : '';
   }
@@ -756,21 +826,25 @@
     var cut = s.indexOf(',') + 3;
     setText($('pctMain'), s.substring(0, cut));
     setDigits($('pctTail'), s.substring(cut));
+    if (isMobile) { setText($('heroPctMain'), s.substring(0, cut)); setDigits($('heroPctTail'), s.substring(cut)); }
     var g = growth(Math.max(0, ms / DAY));
     if (g) {
       liveNum($('wt'), g.g, 4, 0, 'g');
       liveNum($('len'), g.cm, 6, 2, 'cm');
+      if (isMobile) liveNum($('heroWt'), g.g, 4, 0, 'g');
     } else {
       $('wt').removeAttribute('data-big'); setText($('wt'), '–');
       $('len').removeAttribute('data-big'); setText($('len'), '–');
+      $('heroWt').removeAttribute('data-big'); setText($('heroWt'), '–');
     }
   }
 
   var liveLast = 0;
   function liveLoop(ts) {
     requestAnimationFrame(liveLoop);
-    if (ts - liveLast < 33) return;                 // ~30 kare/sn yeter, TV de yorulmasın
-    if ((!isMobile && page !== 0) || H.open || U.open) return;     // haneler görünmüyorken boşuna çalışma (mobilde sayfalar alt alta, hep görünür)
+    if (ts - liveLast < (dimmed ? 1000 : 33)) return;   // ~30 kare/sn yeter, TV de yorulmasın; gece saniyede bir
+    if (isBorn() || H.open || U.open) return;
+    if (!isMobile && page !== 0 && ts - pageAt > 1300) return;   // solma bitene kadar sürsün; mobilde sayfalar hep görünür
     liveLast = ts;
     live();
   }
@@ -778,6 +852,7 @@
   var lastDay = '';
 
   function daily(now) {
+    if (isBorn()) { dailyBorn(now); return; }
     var today = midnight(now);
     var ga = diffDays(today, lmp) - adj;
     var left = diffDays(due, today);
@@ -803,9 +878,7 @@
     $('due').textContent = fmt(due, true);
     $('dueWindow').textContent = 'Term aralığı: ' + fmtShort(addDays(lmp, 259 + adj)) + ' – ' + fmtShort(addDays(lmp, 293 + adj));
 
-    $('rate').textContent = 'saatte +%' + dec(100 / 280 / 24, 4) + ' · günde +%' + dec(100 / 280, 3);
     $('ga').textContent = wk + ' hafta ' + dy + ' gün';
-    $('ga2').textContent = (wk + 1) + '. haftadayız';
     var tri = ga < 14 * 7 ? 1 : (ga < 28 * 7 ? 2 : 3);
     $('tri').textContent = tri + '. trimester';
     $('month').textContent = Math.min(9, Math.floor(ga / 30.44) + 1) + '. ay';
@@ -813,9 +886,9 @@
 
     var sz = ga < 28 ? ['🌱', 'henüz minicik'] : SIZES[Math.max(4, Math.min(42, wk))];
     $('fruitEmoji').textContent = sz[0];
-    $('fruitTxt').innerHTML = sz[1] + ' kadar<span>' + wk + '. hafta karşılaştırması</span>';
+    $('fruitTxt').innerHTML = sz[1] + ' kadar<span>' + wk + ' haftalık bebeğin boyutu</span>';
 
-    $('weekLabel').textContent = 'Bu hafta · ' + (wk + 1) + '. hafta';
+    $('weekLabel').textContent = 'Bu hafta';
     $('note').textContent = NOTES[Math.max(4, Math.min(42, wk))] || '';
     var nx = '';
     for (var i = 0; i < MILESTONES.length; i++) {
@@ -837,23 +910,133 @@
     drawWeight(ga, gaF);
     drawGain(ga);
     drawStrip(ga);
+    heroCopy();
+  }
+
+  function heroCopy() {
+    $('heroLeft').textContent = $('left').textContent;
+    $('heroUnit').textContent = $('leftUnit').textContent;
+  }
+
+  /* ---------- Doğumdan sonra ---------- */
+  var born = CONFIG.born ? parse(CONFIG.born) : null;
+  function isBorn() { return !!born && new Date() >= born; }
+  function dailyBorn(now) {
+    var who = CONFIG.name.replace(/’?mız$|'?mız$/, '');
+    var age = diffDays(midnight(now), born), bga = diffDays(born, lmp) - adj;
+    var gaTxt = Math.floor(bga / 7) + ' hafta ' + (bga % 7) + ' günde doğdu';
+    document.title = CONFIG.name + ' Geldi';
+    $('title').textContent = CONFIG.name + ' geldi';
+    $('today').textContent = fmt(now, true);
+    $('countLabel').textContent = 'Yaşı';
+    $('left').textContent = age === 0 ? 'Bugün' : age;
+    $('leftUnit').textContent = age === 0 ? 'doğdu!' : 'günlük';
+    $('leftWeeks').textContent = age >= 7 ? Math.floor(age / 7) + ' hafta' + (age % 7 ? ' ' + (age % 7) + ' gün' : '') : '';
+    $('dueLabel').textContent = 'Doğum günü';
+    $('due').textContent = fmt(born, false);
+    $('dueWindow').textContent = gaTxt;
+    $('ringLabel').textContent = 'Yolculuk';
+    $('pctMain').textContent = '100';
+    $('pctTail').textContent = '';
+    $('ga').textContent = 'tamamlandı';
+    $('sizeLabel').textContent = 'Doğum ölçüleri';
+    $('fruitEmoji').textContent = '👶';
+    $('fruitTxt').innerHTML = 'Hoş geldin, ' + who + '!';
+    $('wtSub').textContent = 'doğum ağırlığı';
+    $('lenType').textContent = 'doğum boyu';
+    var wtTxt = CONFIG.bornG ? String(Math.round(CONFIG.bornG)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + '<small>g</small>' : '–';
+    $('wt').innerHTML = wtTxt;
+    $('heroWt').innerHTML = wtTxt;
+    $('len').innerHTML = CONFIG.bornCm ? dec(CONFIG.bornCm, CONFIG.bornCm % 1 ? 1 : 0) + '<small>cm</small>' : '–';
+    $('weekLabel').textContent = 'Yeni bir yolculuk';
+    $('note').textContent = 'Aylardır beklediğimiz gün geldi. Şimdi asıl macera başlıyor.';
+    $('next').textContent = '';
+    heroCopy();
+  }
+
+  /* ---------- Tema: gündüz cihaz ayarı, gece koyu ---------- */
+  var mqLight = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;   // desteklemeyen eski TV koyu kalır
+  var dimmed = false;
+  function isNight(now) { var h = now.getHours(); return CONFIG.night && (h >= 22 || h < 7); }
+  function applyTheme(now) {
+    var root = document.documentElement, night = isNight(now);
+    var light = CONFIG.theme === 'light' || (CONFIG.theme === 'auto' && !night && !!mqLight && mqLight.matches);
+    var theme = light ? 'light' : 'dark';
+    if (root.getAttribute('data-theme') !== theme) {
+      root.setAttribute('data-theme', theme);
+      lastDay = '';                 // grafikler yeni renklerle çizilsin
+    }
+    dimmed = night && !light && !isMobile;
+    if (dimmed) root.setAttribute('data-night', ''); else root.removeAttribute('data-night');
+    if (isBorn()) root.setAttribute('data-born', ''); else root.removeAttribute('data-born');
+    var tc = document.querySelector('meta[name="theme-color"]');
+    if (tc) tc.setAttribute('content', V('--bg1'));
+  }
+
+  /* ---------- Kilometre taşları ---------- */
+  var MARK_TXT = ['2. trimester başladı!', 'Yolun yarısı geride!', '3. trimester başladı!', 'Term! Artık doğuma hazır', 'Bugün tahmini doğum günü!'];
+  var markKey = 'ayla-marks-' + CONFIG.lmp, marksMem = null, celeTimer = null;
+  function marksAt(now) {
+    var ms = now - start, n = 0;
+    for (var i = 0; i < MILESTONES.length; i++) if (ms >= MILESTONES[i][0] * DAY) n++;
+    return { p: Math.floor(Math.max(0, Math.min(100, ms / TOTAL * 100))), m: n, k: Math.floor(gAt(Math.max(0, ms / DAY)) / 500) };
+  }
+  function marksLoad() {
+    if (marksMem) return marksMem;
+    try { return JSON.parse(localStorage.getItem(markKey)); } catch (e) { return null; }
+  }
+  function marksSave(m) {
+    marksMem = m;
+    try { localStorage.setItem(markKey, JSON.stringify(m)); } catch (e) {}
+  }
+  function checkMarks(now) {
+    if (isBorn() || isNight(now) || H.open || U.open) return;   // gece beklesin, sabah kutlansın
+    var cur = marksAt(now), prev = marksLoad();
+    if (!prev) { marksSave(cur); return; }                      // ilk ziyaret: geçmişi kutlama
+    if (cur.m > prev.m) celebrate('🎉', MARK_TXT[cur.m - 1], CONFIG.name + ' büyüyor', true);
+    else if (cur.k > prev.k) celebrate('🎉', CONFIG.name + ' ' + (cur.k < 2 ? '500 gram' : dec(cur.k / 2, cur.k % 2 ? 1 : 0) + ' kilo') + ' oldu!', 'ortalama tahmine göre', true);
+    else if (cur.p > prev.p) celebrate('💗', '%' + cur.p + ' tamamlandı!', 'yolculuk devam ediyor', false);
+    if (cur.m !== prev.m || cur.k !== prev.k || cur.p !== prev.p) marksSave(cur);
+  }
+  function celebrate(icon, title, sub, big) {
+    var box = $('cele');
+    $('celeE').textContent = icon; $('celeT').textContent = title; $('celeS').textContent = sub;
+    box.className = 'cele'; box.hidden = false;
+    clearTimeout(celeTimer);
+    celeTimer = setTimeout(function () {
+      box.className = 'cele out';
+      celeTimer = setTimeout(function () { box.hidden = true; }, 600);
+    }, big ? 10000 : 6000);
+    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!big || calm) return;
+    var ICONS = ['💗', '✨', '🎉', '🌸'];
+    for (var i = 0; i < 18; i++) {
+      var f = document.createElement('span');
+      f.className = 'fly emoji';
+      f.textContent = ICONS[i % ICONS.length];
+      f.style.left = (4 + Math.random() * 92) + '%';
+      f.style.animationDelay = (Math.random() * 2.5).toFixed(2) + 's';
+      f.addEventListener('animationend', function () { this.parentNode.removeChild(this); });
+      document.body.appendChild(f);
+    }
   }
 
   function render() {
     var now = new Date();
+    applyTheme(now);
     var h = now.getHours(), m = now.getMinutes();
     $('time').textContent = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
     var key = midnight(now).getTime() + '-' + now.getHours();   // grafikler saatte bir tazelenir
     if (key !== lastDay) { lastDay = key; daily(now); }
     precise(now);
-    live();
-    updateHeartBadge();
+    if (!isBorn()) { live(); updateHeartBadge(); checkMarks(now); }
   }
 
   /* ---------- Sayfa geçişi ---------- */
-  var page = 0, rotTimer = null;
+  var page = 0, rotTimer = null, pageAt = -1e9;
   function show(i) {
-    page = (i + 2) % 2;
+    page = isBorn() ? 0 : (i + 2) % 2;
+    pageAt = performance.now();
     $('p1').className = 'page' + (page === 0 ? ' on' : '');
     $('p2').className = 'page' + (page === 1 ? ' on' : '');
     $('d1').className = 'dot' + (page === 0 ? ' on' : '');
@@ -907,7 +1090,7 @@
     var b = Math.round(baseBpm());
     $('bpm').textContent = b || '–';
     if (b) $('hbIcon').style.animationDuration = (60 / b).toFixed(3) + 's';
-    $('usWk').textContent = Math.floor((new Date() - start) / DAY / 7) + 1;
+    $('usWk').textContent = Math.floor((new Date() - start) / DAY / 7);
   }
 
   var H = { open: false, ctx: null, noise: null, master: null, bg: null, timer: null, raf: 0,
@@ -1056,12 +1239,12 @@
     if (H.ctx && H.ctx.suspend) setTimeout(function () { if (!H.open && !U.open) H.ctx.suspend(); }, 400);
   }
   function openHeart() {
-    if (H.open || U.open) return;
+    if (H.open || U.open || isBorn()) return;
     H.open = true;
     $('ov').hidden = false;
     var gaF = (new Date() - start) / DAY, wk = Math.floor(gaF / 7);
     $('ovTitle').textContent = CONFIG.name.replace(/’?mız$|'?mız$/, '') + '’nın kalbi';
-    $('ovSide').innerHTML = '<span>' + (wk + 1) + '. hafta ortalaması </span><b>' + Math.round(baseBpm()) + ' atım/dk</b><span> · normal aralık <em style="font-style:normal;white-space:nowrap">110–160</em></span>';
+    $('ovSide').innerHTML = '<span>Bu haftanın ortalaması </span><b>' + Math.round(baseBpm()) + ' atım/dk</b><span> · normal aralık <em style="font-style:normal;white-space:nowrap">110–160</em></span>';
     startBeats(0.9);
     H.vals = null; H.lastX = -1; H.lastPulse = -1; H.lastTxt = 0;
     $('ovBpm').textContent = Math.round(H.bpm);
@@ -1619,7 +1802,7 @@
     U.a.poke = t;
   }
   function usOpen() {
-    if (U.open || H.open) return;
+    if (U.open || H.open || isBorn()) return;
     U.open = true;
     $('usOv').hidden = false;
     var gaF = (new Date() - start) / DAY, wk = Math.floor(gaF / 7), dy = Math.floor(gaF - wk * 7), gr = growth(Math.max(0, gaF));
@@ -1703,7 +1886,11 @@
   started = true;
   render();
   if (qp('page') === '2') show(1);
-  setInterval(render, 5000);   // saat, halka ve çubuk
+  setInterval(render, 5000);   // saat, tema, halka ve çubuk
+  if (mqLight) {
+    if (mqLight.addEventListener) mqLight.addEventListener('change', render);
+    else if (mqLight.addListener) mqLight.addListener(render);
+  }
   requestAnimationFrame(liveLoop);   // haneler sürekli büyüyor
   setInterval(pixelShift, 180000);
   restartRotation();
