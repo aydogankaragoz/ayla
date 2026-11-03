@@ -13,7 +13,7 @@
     --bg1:#160e29; --bg2:#2a1740;
     --ink:#fbf3f7; --muted:#cfbfdd; --dim:#ab9abf;
     --pink:#f7a8c4; --peach:#ffcc9e; --mint:#97e2cf; --lilac:#c9b2ff;
-    --tint:255,255,255; --pk:247,168,196; --mt:151,226,207;
+    --tint:255,255,255; --pk:247,168,196; --mt:151,226,207; --peach-rgb:255,204,158;
     --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.11);
     --blob1:#3b2052; --blob2:#45203d; --g1:#7b3f8c; --g2:#9b4a6a; --glow:.35; --nowbg:#fbf3f7;
   }
@@ -22,7 +22,7 @@
     --bg1:#fff5f1; --bg2:#f5e8f6;
     --ink:#2c1845; --muted:#5d4975; --dim:#6b5884;
     --pink:#b82c6b; --peach:#a34d08; --mint:#0b7461; --lilac:#6239bd;
-    --tint:70,35,90; --pk:184,44,107; --mt:11,116,97;
+    --tint:70,35,90; --pk:184,44,107; --mt:11,116,97; --peach-rgb:163,77,8;
     --card:rgba(255,255,255,.72); --line:rgba(70,35,90,.14);
     --blob1:#fbdbe6; --blob2:#e6d8fb; --g1:#f4c6dd; --g2:#d9c8f7; --glow:.6; --nowbg:#fff;
   }
@@ -47,7 +47,7 @@
 
   /* 1920x1080 sahne, pencereye göre ölçeklenir */
   #stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;
-    padding:56px 84px;display:grid;grid-template-rows:auto 1fr;grid-row-gap:36px}
+    padding:56px 84px;display:grid;grid-template-rows:auto 1fr;grid-row-gap:28px}
 
   header{display:flex;justify-content:space-between;align-items:center}
   .who{display:flex;align-items:center}
@@ -61,7 +61,7 @@
   .clock .date{color:var(--muted);font-size:25px;font-weight:600;margin-top:10px}
 
   #pages{position:relative;min-height:0}
-  .page{position:absolute;left:0;top:0;right:0;bottom:0;display:grid;grid-row-gap:36px;
+  .page{position:absolute;left:0;top:0;right:0;bottom:0;display:grid;grid-row-gap:28px;
     opacity:0;transition:opacity 1.2s ease;pointer-events:none}
   .page.on{opacity:1}
   #p1{grid-template-rows:1fr auto}
@@ -74,10 +74,10 @@
   /* ===== Sayfa 1 ===== */
   .row3{display:grid;grid-template-columns:1fr 1.12fr 1fr;grid-column-gap:40px;min-height:0}
   .count{display:flex;flex-direction:column;justify-content:center}
-  .huge{font-family:Fraunces,Georgia,serif;font-size:190px;line-height:.95;font-weight:700;color:var(--peach);margin-top:14px;letter-spacing:-4px}
+  .huge{font-family:Fraunces,Georgia,serif;font-size:160px;line-height:.95;font-weight:700;color:var(--peach);margin-top:14px;letter-spacing:-4px}
   .unit{font-size:38px;font-weight:800;margin-top:8px}
   .minor{font-size:25px;color:var(--muted);margin-top:10px;font-weight:600}
-  .due{margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
+  .due{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
   .due .v{font-size:38px;font-weight:800;margin-top:10px}
   .due .s{font-size:24px;color:var(--muted);margin-top:6px;font-weight:600}
 
@@ -99,8 +99,8 @@
   .fruit .emoji{font-size:118px;margin-right:26px}
   .fruit .txt{font-size:31px;font-weight:800;line-height:1.25}
   .fruit .txt span{display:block;font-size:21px;color:var(--muted);font-weight:600;margin-top:4px}
-  .stats{margin-top:30px;padding-top:6px;border-top:1px solid var(--line)}
-  .stat{display:flex;justify-content:space-between;align-items:center;padding:20px 0 0}
+  .stats{margin-top:22px;padding-top:4px;border-top:1px solid var(--line)}
+  .stat{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0}
   .stat .s{font-size:20px;color:var(--muted);margin-top:6px;font-weight:600}
   .stat .v{font-family:Fraunces,Georgia,serif;font-size:56px;font-weight:700;line-height:1;white-space:nowrap;text-align:right}
   .stat .v .tl2{font-size:30px;letter-spacing:0}
@@ -123,8 +123,11 @@
   .tick i{display:block;font-style:normal;font-size:19px;color:var(--muted);font-weight:600;margin-top:2px}
   .tick.first{transform:none;text-align:left} .tick.last{transform:translateX(-100%);text-align:right}
   .week{padding:30px 40px;display:flex;flex-direction:column;justify-content:center}
-  .note{font-size:28px;font-weight:700;line-height:1.35;margin-top:12px}
-  .next{font-size:21px;color:var(--peach);font-weight:700;margin-top:14px}
+  .note{font-size:26px;font-weight:700;line-height:1.3;margin-top:10px}
+  .next{font-size:21px;color:var(--peach);font-weight:700;margin-top:8px}
+  .beats{font-size:21px;color:var(--muted);font-weight:700;margin-top:6px;white-space:nowrap}
+  .beats b{color:var(--pink);font-weight:800}
+  .statline{font-size:20px;color:var(--muted);font-weight:700;text-align:right;margin-top:6px}
 
   /* ===== Sayfa 2: Yolculuk ===== */
   .row2{display:grid;grid-template-columns:1.45fr 1fr;grid-column-gap:40px;min-height:0}
@@ -132,6 +135,7 @@
   .chead{display:flex;justify-content:space-between;align-items:baseline}
   .ctitle{font-size:30px;font-weight:800;margin-top:8px}
   .cnote{font-size:20px;color:var(--muted);font-weight:600}
+  .csub{font-size:21px;color:var(--mint);font-weight:700;margin-top:6px}
   .chart{flex:1;min-height:0;margin-top:14px}
   .chart svg{width:100%;height:100%;display:block;overflow:visible}
   .axis{font-family:Nunito,Arial,sans-serif;font-size:19px;font-weight:700;fill:var(--dim)}
@@ -154,8 +158,10 @@
   .nums{padding:30px 40px;display:flex;flex-direction:column;justify-content:center}
   .nrow{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
   .nrow:last-child{border-bottom:0}
-  .nrow span{font-size:21px;color:var(--muted);font-weight:700}
-  .nrow b{font-family:Fraunces,Georgia,serif;font-size:36px;font-weight:700}
+  .nrow>span{font-size:21px;color:var(--muted);font-weight:700}
+  .nrow b{font-family:Fraunces,Georgia,serif;font-size:36px;font-weight:700;white-space:nowrap}
+  .nrow b .tl2{font-size:22px;letter-spacing:0}
+  .nrow b small{font-family:Nunito,Arial,sans-serif;font-size:18px;font-weight:800;margin-left:5px;color:var(--muted)}
 
   .fine{position:absolute;right:84px;bottom:14px;font-size:18px;color:var(--dim);font-weight:600}
   .dots{position:absolute;left:84px;bottom:14px;display:flex;align-items:center}
@@ -223,10 +229,13 @@
   html.m .week{padding:20px}
   html.m .note{font-size:18px;margin-top:8px}
   html.m .next{font-size:14px;margin-top:10px}
+  html.m .beats{font-size:13px;margin-top:6px;white-space:normal}
+  html.m .statline{font-size:13px;margin-top:6px}
   html.m .chartcard{padding:20px 16px 14px}
   html.m .chead{display:block}
-  html.m .ctitle{font-size:20px;margin-top:4px}
+  html.m .ctitle{font-size:18px;margin-top:4px}
   html.m .cnote{font-size:12px;margin-top:4px}
+  html.m .csub{font-size:12px;margin-top:4px}
   html.m .chart{flex:none;height:230px;margin-top:8px}
   html.m .axis{font-size:11px}
   html.m .dlabel{font-size:13px}
@@ -242,8 +251,10 @@
   html.m .fw.cur:before{width:52px;height:52px;margin-left:-26px;bottom:22px}
   html.m .nums{padding:12px 20px}
   html.m .nrow{padding:10px 0}
-  html.m .nrow span{font-size:15px}
+  html.m .nrow>span{font-size:15px}
   html.m .nrow b{font-size:24px}
+  html.m .nrow b .tl2{font-size:15px}
+  html.m .nrow b small{font-size:12px;margin-left:3px}
   html.m .dots{display:none}
   html.m .fine{position:static;text-align:center;font-size:12px;margin-top:6px}
 
@@ -359,7 +370,7 @@
   @keyframes celefly{0%{transform:translateY(0) scale(.7);opacity:0}12%{opacity:1}80%{opacity:1}100%{transform:translateY(-100vh) scale(1.15) rotate(18deg);opacity:0}}
 
   /* ===== Doğumdan sonra ===== */
-  html[data-born] .hb,html[data-born] .dots,html[data-born] #p2,html[data-born] .chips,html[data-born] .hero .hr,html[data-born] .fine{display:none}
+  html[data-born] .hb,html[data-born] .dots,html[data-born] #p2,html[data-born] .chips,html[data-born] .hero .hr,html[data-born] .fine,html[data-born] .beats,html[data-born] .statline{display:none}
 </style>
 </head>
 <body>
@@ -442,6 +453,8 @@
           <div class="fruit"><div class="emoji" id="fruitEmoji">🌱</div><div class="txt" id="fruitTxt"></div></div>
           <div class="stats">
             <div class="stat"><div><div class="label">Ağırlık</div><div class="s" id="wtSub">ortalama tahmin</div></div><div class="v" id="wt">–</div></div>
+            <div class="statline" id="wtToday"></div>
+            <div class="statline" id="wtShare"></div>
             <div class="stat"><div><div class="label">Boy</div><div class="s" id="lenType"></div></div><div class="v" id="len">–</div></div>
           </div>
         </section>
@@ -459,6 +472,7 @@
           <div class="label" id="weekLabel">Bu hafta</div>
           <div class="note" id="note"></div>
           <div class="next" id="next"></div>
+          <div class="beats" id="beats">Kalbi yaklaşık <b id="beatsTotal"></b> kez attı · <span id="beatsToday"></span></div>
         </section>
       </div>
     </div>
@@ -471,6 +485,7 @@
             <div><div class="label">Ağırlık yolculuğu</div><div class="ctitle" id="wTitle"></div></div>
             <div class="cnote">8. haftadan doğuma, ortalama gram</div>
           </div>
+          <div class="csub" id="dblLine"></div>
           <div class="chart" id="wChart"></div>
         </section>
         <section class="card chartcard">
@@ -486,8 +501,8 @@
           <div class="strip" id="strip"></div>
         </section>
         <section class="card nums">
-          <div class="nrow"><span>Son 7 günde</span><b id="n7" style="color:var(--pink)">–</b></div>
-          <div class="nrow"><span>Son 30 günde</span><b id="n30" style="color:var(--lilac)">–</b></div>
+          <div class="nrow"><span>Pazartesi gününden beri</span><b id="nWeek" style="color:var(--pink)">–</b></div>
+          <div class="nrow"><span>Ayın 1’inden beri</span><b id="nMonth" style="color:var(--lilac)">–</b></div>
           <div class="nrow"><span>Doğuma kadar daha</span><b id="nLeft" style="color:var(--peach)">–</b></div>
         </section>
       </div>
@@ -715,11 +730,16 @@
       el('text', { x: L - 12, y: Y(g) + 6, 'text-anchor': 'end', 'class': 'axis' }, svg, g ? '+' + g + ' g' : '0');
     }
     var cur = Math.floor(ga / 7) + 1; // içinde bulunduğumuz hafta
-    var curVal = 0, curX = 0, curY = 0;
+    var curVal = 0, curX = 0, curY = 0, peak = w0, peakVal = 0, pw2;
+    for (pw2 = w0; pw2 <= w1; pw2++) {
+      var pv = gAt(pw2 * 7) - gAt((pw2 - 1) * 7);
+      if (pv > peakVal) { peakVal = pv; peak = pw2; }
+    }
     for (var w = w0; w <= w1; w++) {
       var v = Math.round(gAt(w * 7) - gAt((w - 1) * 7));
       var x = L + (w - w0) * slot + 2, y = Y(v), h = Y(0) - y;
       var fill = w < cur ? V('--lilac') : (w === cur ? V('--pink') : A('--tint', .14));
+      if (w === peak && w !== cur) fill = w < cur ? V('--peach') : A('--peach-rgb', .6);
       el('rect', { x: x, y: y, width: bw, height: Math.max(h, 2), rx: 3, fill: fill }, svg);
       if (w === cur) { curVal = v; curX = x + bw / 2; curY = y; }
       if (w % (isMobile ? 8 : 4) === 0) el('text', { x: x + bw / 2, y: T + ph + 30, 'text-anchor': 'middle', 'class': 'axis' }, svg, w + '. hf');
@@ -730,7 +750,7 @@
       el('line', { x1: curX, x2: curX, y1: ly + 12, y2: curY - 8, stroke: A('--pk', .6), 'stroke-width': 2, 'stroke-dasharray': '3 5' }, svg);
       el('text', { x: curX, y: ly, 'text-anchor': anchor, 'class': 'dlabel' }, svg, 'Bu hafta +' + curVal + ' g');
     }
-    $('gTitle').textContent = 'Büyüme her hafta hızlanıyor';
+    $('gTitle').textContent = 'En hızlı büyüme ' + peak + '. haftada: +' + Math.round(peakVal) + ' g';
   }
 
   /* Meyve şeridi: 4–40. hafta, 2 haftada bir */
@@ -786,8 +806,32 @@
     $('fill').style.width = pct + '%';
     $('now').style.left = pct + '%';
     if (isBorn()) return;
+    var gNow = gAt(ms / DAY);
+    var d0 = (midnight(now) - start) / DAY;                  // bugün 00:00
+    var perHour = gAt(ms / DAY + 1 / 24) - gNow;
+    $('wtToday').textContent = gNow ? 'bugün +' + grams(gNow - gAt(d0)) + ' · saatte ' + dec(perHour, 2) + ' g' : '';
+    var gBirth = gAt(280);
+    $('wtShare').textContent = gNow && ms / DAY < 280 ? 'doğum kilosuna göre %' + dec(gNow / gBirth * 100, 1) + ' · ' + dec(gBirth / gNow, 1) + ' katına çıkacak' : '';
+    $('beats').style.display = beatsAt(ms / DAY) >= 1 ? '' : 'none';
+    $('beatsToday').textContent = beatsText(beatsAt(ms / DAY) - beatsAt(Math.max(0, d0)));
     var g = growth(Math.max(0, ms / DAY));
     $('lenType').textContent = g ? (g.w < 20 ? 'baş–popo boyu' : 'baş–topuk boyu') : '';
+  }
+
+  function thousands(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  /* 6. haftadan bu yana toplam kalp atışı: hız eğrisi parça parça doğrusal olduğundan tam integral */
+  function beatsAt(gaDays) {
+    var w = gaDays / 7, total = 0;
+    for (var i = 0; i < HR_PTS.length - 1 && w > HR_PTS[i][0]; i++) {
+      var a = HR_PTS[i], b = HR_PTS[i + 1], to = Math.min(w, b[0]);
+      var end = a[1] + (b[1] - a[1]) * (to - a[0]) / (b[0] - a[0]);
+      total += (a[1] + end) / 2 * (to - a[0]) * 7 * 1440;
+    }
+    if (w > 42) total += 135 * (w - 42) * 7 * 1440;
+    return total;
+  }
+  function beatsText(n) {
+    return n >= 1000 ? 'bugün ' + Math.round(n / 1000) + ' bin' : 'bugün ' + Math.round(n);
   }
 
   /* Sürekli kısım: yüzde, ağırlık ve boy hanelerini anlık saatten hesapla */
@@ -798,7 +842,7 @@
       node.textContent = '';
       for (i = 0; i < s.length; i++) {
         c = document.createElement('span');
-        if (s.charAt(i) !== ',') c.className = 'dg';
+        if (s.charAt(i) !== ',' && s.charAt(i) !== '.') c.className = 'dg';
         node.appendChild(c);
       }
     }
@@ -809,10 +853,10 @@
   }
 
   /* 1234.56789 → büyük "1.234" + küçük ",56789" ; keep: virgülden sonra büyük yazılacak hane sayısı */
-  function liveNum(box, v, decimals, keep, unit) {
+  function liveNum(box, v, decimals, keep, unit, prefix) {
     var parts = v.toFixed(decimals).split('.');
     var ip = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    var big = ip + (keep ? ',' + parts[1].substring(0, keep) : '');
+    var big = (prefix || '') + ip + (keep ? ',' + parts[1].substring(0, keep) : '');
     if (box.getAttribute('data-big') !== big) {     // tam kısım nadiren değişir; DOM'u yalnızca o zaman kur
       box.setAttribute('data-big', big);
       box.innerHTML = big + '<span class="tl2"></span><small>' + unit + '</small>';
@@ -827,6 +871,13 @@
     setText($('pctMain'), s.substring(0, cut));
     setDigits($('pctTail'), s.substring(cut));
     if (isMobile) { setText($('heroPctMain'), s.substring(0, cut)); setDigits($('heroPctTail'), s.substring(cut)); }
+    setDigits($('beatsTotal'), thousands(Math.round(beatsAt(ms / DAY))));
+    // Pazartesi 00:00'dan ve ayın 1'i 00:00'dan şu ana kadarki artış
+    var nowD = new Date(), gNow = gAt(Math.max(0, ms / DAY));
+    var monday = addDays(midnight(nowD), -((nowD.getDay() + 6) % 7));
+    var first = new Date(nowD.getFullYear(), nowD.getMonth(), 1);
+    liveNum($('nWeek'), gNow - gAt((monday - start) / DAY), 4, 0, 'g', '+');
+    liveNum($('nMonth'), gNow - gAt((first - start) / DAY), 4, 0, 'g', '+');
     var g = growth(Math.max(0, ms / DAY));
     if (g) {
       liveNum($('wt'), g.g, 4, 0, 'g');
@@ -842,9 +893,8 @@
   var liveLast = 0;
   function liveLoop(ts) {
     requestAnimationFrame(liveLoop);
-    if (ts - liveLast < (dimmed ? 1000 : 33)) return;   // ~30 kare/sn yeter, TV de yorulmasın; gece saniyede bir
+    if (ts - liveLast < (dimmed ? 200 : 33)) return;   // ~30 kare/sn yeter, TV de yorulmasın; gece daha seyrek ama her kalp atışı görünsün
     if (isBorn() || H.open || U.open) return;
-    if (!isMobile && page !== 0 && ts - pageAt > 1300) return;   // solma bitene kadar sürsün; mobilde sayfalar hep görünür
     liveLast = ts;
     live();
   }
@@ -865,7 +915,9 @@
       $('left').textContent = left;
       $('leftUnit').textContent = 'gün kaldı';
       var lw = Math.floor(left / 7), ld = left % 7;
-      $('leftWeeks').textContent = lw + ' hafta' + (ld ? ' ' + ld + ' gün' : '');
+      var weekends = 0;
+      for (var dd = 0; dd < left; dd++) if (addDays(today, dd).getDay() === 6) weekends++;   // bugünden doğuma kalan cumartesiler
+      $('leftWeeks').textContent = lw + ' hafta' + (ld ? ' ' + ld + ' gün' : '') + ' · ' + weekends + ' hafta sonu';
     } else if (left === 0) {
       $('left').textContent = 'Bugün';
       $('leftUnit').textContent = 'tahmini doğum günü!';
@@ -876,7 +928,9 @@
       $('leftWeeks').textContent = 'Tahmini tarihi geçtik, her an gelebilir';
     }
     $('due').textContent = fmt(due, true);
-    $('dueWindow').textContent = 'Term aralığı: ' + fmtShort(addDays(lmp, 259 + adj)) + ' – ' + fmtShort(addDays(lmp, 293 + adj));
+    var termIn = diffDays(addDays(lmp, 259 + adj), today);
+    $('dueWindow').textContent = 'Term ' + fmtShort(addDays(lmp, 259 + adj)) + ' – ' + fmtShort(addDays(lmp, 293 + adj)) + ' · ' +
+      (termIn > 1 ? termIn + ' gün sonra' : termIn === 1 ? 'yarın' : 'başladı');
 
     $('ga').textContent = wk + ' hafta ' + dy + ' gün';
     var tri = ga < 14 * 7 ? 1 : (ga < 28 * 7 ? 2 : 3);
@@ -886,7 +940,12 @@
 
     var sz = ga < 28 ? ['🌱', 'henüz minicik'] : SIZES[Math.max(4, Math.min(42, wk))];
     $('fruitEmoji').textContent = sz[0];
-    $('fruitTxt').innerHTML = sz[1] + ' kadar<span>' + wk + ' haftalık bebeğin boyutu</span>';
+    var nextSz = wk >= 4 && wk < 42 ? SIZES[wk + 1] : null, fruitSub = wk + ' haftalık bebeğin boyutu';
+    if (nextSz && nextSz[1] !== sz[1]) {
+      var fruitDay = addDays(start, (wk + 1) * 7);
+      fruitSub = (diffDays(fruitDay, today) === 1 ? 'Yarın ' : DAYS[fruitDay.getDay()] + ' günü ') + nextSz[1] + ' kadar olacak';
+    }
+    $('fruitTxt').innerHTML = sz[1] + ' kadar<span>' + fruitSub + '</span>';
 
     $('weekLabel').textContent = 'Bu hafta';
     $('note').textContent = NOTES[Math.max(4, Math.min(42, wk))] || '';
@@ -904,9 +963,17 @@
     var gaF = (now - start) / DAY;               // saat dahil
     var gNow = gAt(gaF);
     $('wTitle').textContent = ga >= 56 ? '1 gramdan ' + grams(gNow) + '’a' : 'Henüz çok minik';
-    $('n7').textContent = '+' + grams(gNow - gAt(gaF - 7));
-    $('n30').textContent = '+' + grams(gNow - gAt(gaF - 30));
     $('nLeft').textContent = '+' + grams(Math.max(0, gAt(280) - gNow));
+    // Ağırlık ne zaman iki katına çıktı / çıkacak (saat hassasiyetinde)
+    var past = null, futu = null, h;
+    if (gNow > 0) {
+      for (h = 1; gaF - h / 24 >= 56; h++) if (gAt(gaF - h / 24) <= gNow / 2) { past = h / 24; break; }
+      for (h = 1; gaF + h / 24 <= 280; h++) if (gAt(gaF + h / 24) >= gNow * 2) { futu = h / 24; break; }
+    }
+    var dbl = [];
+    if (past !== null) dbl.push('Son ' + Math.round(past) + ' günde iki katına çıktı');
+    if (futu !== null) dbl.push('bugünkünün iki katı: ' + fmtShort(new Date(now.getTime() + futu * DAY)));
+    $('dblLine').textContent = dbl.join(' · ');
     drawWeight(ga, gaF);
     drawGain(ga);
     drawStrip(ga);
@@ -1033,10 +1100,9 @@
   }
 
   /* ---------- Sayfa geçişi ---------- */
-  var page = 0, rotTimer = null, pageAt = -1e9;
+  var page = 0, rotTimer = null;
   function show(i) {
     page = isBorn() ? 0 : (i + 2) % 2;
-    pageAt = performance.now();
     $('p1').className = 'page' + (page === 0 ? ' on' : '');
     $('p2').className = 'page' + (page === 1 ? ' on' : '');
     $('d1').className = 'dot' + (page === 0 ? ' on' : '');
