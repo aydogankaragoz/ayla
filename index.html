@@ -141,6 +141,7 @@
   .axis{font-family:Nunito,Arial,sans-serif;font-size:19px;font-weight:700;fill:var(--dim)}
   .dlabel{font-family:Nunito,Arial,sans-serif;font-size:21px;font-weight:800;fill:var(--ink)}
   .dsub{font-family:Nunito,Arial,sans-serif;font-size:18px;font-weight:700;fill:var(--muted)}
+  .dbl{font-family:Nunito,Arial,sans-serif;font-size:21px;font-weight:800;fill:var(--mint)}
 
   .foot2{display:grid;grid-template-columns:2.2fr 1fr;grid-column-gap:40px}
   .journey{padding:30px 40px 24px}
@@ -240,6 +241,7 @@
   html.m .axis{font-size:11px}
   html.m .dlabel{font-size:13px}
   html.m .dsub{font-size:11px}
+  html.m .dbl{font-size:13px}
   html.m .journey{padding:20px 0 14px}
   html.m .journey .label{padding:0 20px}
   html.m .strip{justify-content:flex-start;overflow-x:auto;height:86px;padding:0 20px 4px;margin-top:10px;position:relative;-webkit-overflow-scrolling:touch}
@@ -670,7 +672,7 @@
   function A(name, a) { return 'rgba(' + V(name) + ',' + a + ')'; }
 
   /* Ağırlık eğrisi: geçmiş dolu çizgi, gelecek kesikli */
-  function drawWeight(ga, gaF) {
+  function drawWeight(ga, gaF, dblPast, dblNext) {
     var c = makeSvg($('wChart')), svg = c.svg;
     var L = 70, R = 30, T = 46, B = 40, pw = c.W - L - R, ph = c.H - T - B;
     var x0 = 8, x1 = 40, yMax = 3900;
@@ -705,18 +707,43 @@
     el('path', { d: fut, fill: 'none', stroke: A('--tint', .32), 'stroke-width': 2.5, 'stroke-dasharray': '7 8', 'stroke-linecap': 'round' }, svg);
     el('path', { d: past, fill: 'none', stroke: V('--pink'), 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
 
+    // İki katına çıkma: geçmiş ve gelecek aralığı eğri üstünde, uçları etiketli
+    function span(d0, d1, attrs) {
+      var path = '';
+      for (var dd = d0; dd < d1; dd += .5) path += (path ? ' L' : 'M') + X(dd / 7).toFixed(1) + ',' + Y(gAt(dd)).toFixed(1);
+      path += ' L' + X(d1 / 7).toFixed(1) + ',' + Y(gAt(d1)).toFixed(1);
+      attrs.d = path; attrs.fill = 'none'; attrs.stroke = V('--mint'); attrs['stroke-linecap'] = 'round';
+      el('path', attrs, svg);
+    }
+    function dblMark(d, sub, right) {
+      var mx = X(d / 7), my = Y(gAt(d));
+      el('circle', { cx: mx, cy: my, r: 6, fill: V('--mint'), stroke: V('--bg1'), 'stroke-width': 2 }, svg);
+      var nearEnd = right && mx > L + pw * .8;     // sağ kenara taşmasın: grafiğin sağına yasla, eğrinin altında kalsın
+      if (nearEnd && isMobile) return;             // dar ekranda yer yok, nokta yeter
+      var tx = nearEnd ? L + pw : (right ? mx + 14 : mx - 14), anchor = right && !nearEnd ? 'start' : 'end', y0 = right ? my + 24 : my - 28;
+      el('text', { x: tx, y: y0, 'text-anchor': anchor, 'class': 'dbl' }, svg, grams(gAt(d)));
+      el('text', { x: tx, y: y0 + (isMobile ? 13 : 22), 'text-anchor': anchor, 'class': 'dsub' }, svg, sub);
+    }
+    if (dblPast !== null) span(gaF - dblPast, gaF, { 'stroke-width': 4 });
+    if (dblNext !== null) span(gaF, gaF + dblNext, { 'stroke-width': 3, 'stroke-dasharray': '7 8' });
+    if (dblPast !== null && gaF / 7 >= 19) dblMark(gaF - dblPast, Math.round(dblPast) + ' gün önce', false);   // erken haftalarda eğri düz, etiketler sıkışır
+    if (dblNext !== null && gaF / 7 >= 19) dblMark(gaF + dblNext, fmtShort(new Date(start.getTime() + (gaF + dblNext) * DAY)), true);
+
     // bugün
     var nx = X(now), ny = Y(gAt(now * 7));
     el('line', { x1: nx, x2: nx, y1: ny + 12, y2: Y(0), stroke: A('--pk', .5), 'stroke-width': 2, 'stroke-dasharray': '3 5' }, svg);
     el('circle', { cx: nx, cy: ny, r: 13, fill: A('--pk', .25) }, svg);
     el('circle', { cx: nx, cy: ny, r: 7, fill: V('--ink'), stroke: V('--bg1'), 'stroke-width': 2 }, svg);
-    el('text', { x: nx, y: ny - 46, 'text-anchor': 'middle', 'class': 'dlabel' }, svg, 'Bugün · ' + grams(gAt(gaF)));
-    el('text', { x: nx, y: ny - 22, 'text-anchor': 'middle', 'class': 'dsub' }, svg, (Math.floor(ga / 7)) + ' hafta ' + (ga % 7) + ' gün');
+    var todayAnchor = nx > L + pw * .9 ? 'end' : 'middle';
+    var todayLabel = el('text', { x: nx, y: ny - 46, 'text-anchor': todayAnchor, 'class': 'dlabel' }, svg, 'Bugün · ' + grams(gAt(gaF)));
+    if (!isMobile) el('text', { x: nx, y: ny - 22, 'text-anchor': todayAnchor, 'class': 'dsub' }, svg, (Math.floor(ga / 7)) + ' hafta ' + (ga % 7) + ' gün');
 
     // uç etiket
     var ex = X(40), ey = Y(gAt(280));
     el('circle', { cx: ex, cy: ey, r: 6, fill: V('--peach') }, svg);
-    el('text', { x: ex - 4, y: ey - 22, 'text-anchor': 'end', 'class': 'dlabel' }, svg, 'Doğumda ~' + grams(gAt(280)));
+    var endLabel = el('text', { x: ex - 4, y: ey - 22, 'text-anchor': 'end', 'class': 'dlabel' }, svg, 'Doğumda ~' + grams(gAt(280)));
+    var ta = todayLabel.getBBox(), tb = endLabel.getBBox();     // doğuma yaklaşınca iki etiket çakışırsa "Bugün" kalsın
+    if (gaF / 7 >= 38.5 || (ta.x < tb.x + tb.width && tb.x < ta.x + ta.width && ta.y < tb.y + tb.height && tb.y < ta.y + ta.height)) svg.removeChild(endLabel);
   }
 
   /* Haftalık artış çubukları */
@@ -974,7 +1001,7 @@
     if (past !== null) dbl.push('Son ' + Math.round(past) + ' günde iki katına çıktı');
     if (futu !== null) dbl.push('bugünkünün iki katı: ' + fmtShort(new Date(now.getTime() + futu * DAY)));
     $('dblLine').textContent = dbl.join(' · ');
-    drawWeight(ga, gaF);
+    drawWeight(ga, gaF, past, futu);
     drawGain(ga);
     drawStrip(ga);
     heroCopy();
