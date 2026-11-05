@@ -86,6 +86,7 @@
   .pct .sign{font-size:42px;color:var(--pink);margin-right:2px}
   .pct .tail{font-size:35px;color:var(--pink);letter-spacing:0;font-variant-numeric:tabular-nums}
   .ga{font-size:30px;font-weight:800;margin-top:14px}
+  .gam{font-size:22px;font-weight:700;color:var(--muted);margin-top:4px}
   .chips{margin-top:22px;display:flex;justify-content:center}
   .chip{border:1px solid var(--line);background:rgba(var(--tint),.05);border-radius:999px;padding:10px 24px;
     font-size:22px;font-weight:700;margin:0 7px;white-space:nowrap}
@@ -201,6 +202,7 @@
   html.m .pct .sign{font-size:28px}
   html.m .pct .tail{font-size:25px}
   html.m .ga{font-size:19px;margin-top:8px}
+  html.m .gam{font-size:14px;margin-top:2px}
   html.m .chips{margin-top:16px;flex-wrap:wrap}
   html.m .chip{font-size:14px;padding:6px 13px;margin:0 3px}
   html.m .fruit{margin-top:12px}
@@ -532,6 +534,7 @@
               <div class="label" id="ringLabel">Tamamlanan</div>
               <div class="pct"><span class="sign">%</span><span id="pctMain">0,0</span><span class="tail" id="pctTail">000</span></div>
               <div class="ga" id="ga"></div>
+              <div class="gam" id="gaM"></div>
             </div>
           </div>
           <div class="chips">
@@ -1064,6 +1067,14 @@
     btn.disabled = !known;
   }
 
+  function monthsDays(from, to) {                             // takvim ayı + kalan gün
+    if (to < from) return '';
+    var m = (to.getFullYear() - from.getFullYear()) * 12 + to.getMonth() - from.getMonth();
+    if (to.getDate() < from.getDate()) m--;
+    var d = diffDays(to, new Date(from.getFullYear(), from.getMonth() + m, from.getDate()));
+    return (m ? m + ' ay' : '') + (m && d ? ' ' : '') + (d || !m ? d + ' gün' : '');
+  }
+
   function daily(now) {
     if (isBorn()) { dailyBorn(now); return; }
     setSign(due, false);
@@ -1097,6 +1108,7 @@
       (termIn > 1 ? termIn + ' gün sonra' : termIn === 1 ? 'yarın' : 'başladı');
 
     $('ga').textContent = wk + ' hafta ' + dy + ' gün';
+    $('gaM').textContent = monthsDays(start, today);
     var tri = ga < 14 * 7 ? 1 : (ga < 28 * 7 ? 2 : 3);
     $('tri').textContent = tri + '. trimester';
     $('month').textContent = Math.min(9, Math.floor(ga / 30.44) + 1) + '. ay';
@@ -1171,6 +1183,7 @@
     $('pctMain').textContent = '100';
     $('pctTail').textContent = '';
     $('ga').textContent = 'tamamlandı';
+    $('gaM').textContent = '';
     $('sizeLabel').textContent = 'Doğum ölçüleri';
     $('fruitEmoji').textContent = '👶';
     $('fruitTxt').innerHTML = 'Hoş geldin, ' + who + '!';
@@ -2349,7 +2362,86 @@
     }
   });
 
+  /* ---------- Canlı fotoğraf: tek kareyi yüz bölgelerinde hafifçe büker; WebGL yoksa foto durağan kalır ---------- */
+  function livePhoto() {
+    var img = document.querySelector('img.photo');
+    if (!img || !window.requestAnimationFrame) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var cv = document.createElement('canvas'), gl;
+    cv.width = cv.height = 320;
+    try { gl = cv.getContext('webgl', { alpha: false, antialias: false }); } catch (e) {}
+    if (!gl) return;
+    var VS = 'attribute vec2 a;varying vec2 p;void main(){p=a*.5+.5;p.y=1.-p.y;gl_Position=vec4(a,0.,1.);}';
+    var FS = 'precision mediump float;varying vec2 p;uniform sampler2D t;uniform float s,a,n,x,b,br;' +
+      'float g(vec2 q,vec2 c,vec2 r){vec2 d=(q-c)/r;return exp(-dot(d,d));}' +
+      'void main(){vec2 d=vec2(0.);' +
+      'float h=1.-smoothstep(.27,.46,distance(p,vec2(.5,.43)));' +                     // baş bölgesi
+      'vec2 c=p-vec2(.47,.74);d+=h*vec2(c.x*cos(a)-c.y*sin(a)-c.x,c.x*sin(a)+c.y*cos(a)-c.y);' +
+      'd+=h*vec2(x,n);' +                                                               // başını sağa sola ve hafifçe öne arkaya oynatır
+      'd+=s*vec2(-.006,-.015)*g(p,vec2(.39,.605),vec2(.05));' +                         // ağız köşeleri
+      'd+=s*vec2(.006,-.015)*g(p,vec2(.545,.63),vec2(.05));' +
+      'd.y+=s*.011*g(p,vec2(.46,.668),vec2(.06,.04));' +                                // alt dudak
+      'd.y-=s*.009*(g(p,vec2(.29,.56),vec2(.09))+g(p,vec2(.66,.6),vec2(.09)));' +       // yanaklar
+      'd.y-=s*.0035*(g(p,vec2(.408,.442),vec2(.04,.02))+g(p,vec2(.608,.487),vec2(.04,.02)));' +  // gülerken gözler kısılır
+      'd.y+=b*.026*(g(p,vec2(.408,.418),vec2(.055,.03))+g(p,vec2(.608,.463),vec2(.055,.03)));' + // göz kırpma
+      'd.y+=br*smoothstep(.68,.86,p.y);' +                                              // nefes
+      'gl_FragColor=texture2D(t,p-d);}';
+    function sh(type, src) { var o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; }
+    var pr = gl.createProgram();
+    gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS));
+    gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+    gl.useProgram(pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(pr, 'a');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    var u = {};
+    ['s', 'a', 'n', 'x', 'b', 'br'].forEach(function (k) { u[k] = gl.getUniformLocation(pr, k); });
+    function start() {
+      gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      cv.className = 'photo';
+      cv.setAttribute('role', 'img');
+      cv.setAttribute('aria-label', img.alt);
+      var lost = false, last = 0, T = 2 * Math.PI;
+      cv.addEventListener('webglcontextlost', function () { lost = true; cv.hidden = true; img.hidden = false; });
+      function draw(ms) {
+        var t = ms / 1000;
+        var smile = 0.5 - 0.5 * Math.cos(T * t / 4);               // 4 saniyede bir gülümser
+        var bt = t % 6 - 4.6, blink = bt > 0 && bt < 0.32 ? Math.sin(Math.PI * bt / 0.32) : 0;
+        gl.uniform1f(u.s, smile * smile * (3 - 2 * smile));
+        gl.uniform1f(u.a, 0.04 * Math.sin(T * t / 5));
+        gl.uniform1f(u.x, 0.014 * Math.sin(T * t / 5));
+        gl.uniform1f(u.n, 0.004 * Math.sin(T * t / 2.5 + 1));
+        gl.uniform1f(u.b, blink);
+        gl.uniform1f(u.br, 0.004 * Math.sin(T * t / 3.5));
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      }
+      function loop(ms) {
+        if (lost) return;
+        requestAnimationFrame(loop);
+        if (ms - last < 33 || dimmed || H.open || U.open || I.open) return;   // gece ve açık ekranlarda durur
+        last = ms;
+        draw(ms);
+      }
+      draw(0);
+      img.parentNode.insertBefore(cv, img);
+      img.hidden = true;
+      requestAnimationFrame(loop);
+    }
+    if (img.complete && img.naturalWidth) start(); else img.addEventListener('load', start);
+  }
+
   buildTicks();
+  livePhoto();
   fit();
   window.addEventListener('resize', fit);
   started = true;
