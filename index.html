@@ -63,6 +63,7 @@
   .page.on{opacity:1}
   #p1{grid-template-rows:1fr auto}
   #p2{grid-template-rows:1fr auto}
+  #p3{grid-template-rows:1fr}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:34px;padding:40px 44px;
     position:relative;overflow:hidden}
@@ -145,17 +146,17 @@
   .dbl{font-family:Nunito,Arial,sans-serif;font-size:21px;font-weight:800;fill:var(--mint)}
 
   .foot2{display:grid;grid-template-columns:2.2fr 1fr;grid-column-gap:40px}
-  .journey{padding:30px 40px 24px}
-  .strip{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;height:118px}
-  .fw{width:62px;text-align:center;position:relative}
-  .fw .emoji{font-size:34px;display:block;transition:opacity .5s}
-  .fw b{display:block;font-size:20px;color:var(--dim);font-weight:800;margin-top:10px}
+  .journey{padding:30px 40px 24px;display:flex;flex-direction:column}
+  .strip{display:flex;justify-content:space-between;align-items:flex-end;margin:auto 0;height:118px}
+  .fw{flex:1 1 0;min-width:0;text-align:center;position:relative}
+  .fw .emoji{font-size:25px;display:block;transition:opacity .5s}
+  .fw b{display:block;font-size:16px;color:var(--dim);font-weight:800;margin-top:12px;font-variant-numeric:tabular-nums}
   .fw.past .emoji{opacity:.95}
   .fw.future .emoji{opacity:.55;-webkit-filter:grayscale(1);filter:grayscale(1)}
-  .fw.cur{flex:0 0 88px;width:88px}
-  .fw.cur .emoji{font-size:56px}
-  .fw.cur b{color:var(--pink)}
-  .fw.cur:before{content:"";position:absolute;left:50%;bottom:30px;width:78px;height:78px;margin-left:-39px;border-radius:50%;
+  .fw.cur{flex:0 0 80px;width:80px}
+  .fw.cur .emoji{font-size:48px}
+  .fw.cur b{color:var(--pink);font-size:20px}
+  .fw.cur:before{content:"";position:absolute;left:50%;bottom:32px;width:70px;height:70px;margin-left:-35px;border-radius:50%;
     background:rgba(var(--pk),.16);box-shadow:0 0 0 3px rgba(var(--pk),.55)}
   .nums{padding:30px 40px;display:flex;flex-direction:column;justify-content:center}
   .nrow{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line)}
@@ -165,7 +166,43 @@
   .nrow b .tl2{font-size:22px;letter-spacing:0}
   .nrow b small{font-family:Nunito,Arial,sans-serif;font-size:18px;font-weight:800;margin-left:5px;color:var(--muted)}
 
-  .fine{position:absolute;right:84px;bottom:14px;font-size:18px;color:var(--dim);font-weight:600}
+
+  /* ===== Sayfa 3: Ultrason raporu ===== */
+  .scan{padding:34px 40px 30px;display:flex;flex-direction:column}
+  .sctop{display:flex;align-items:flex-end;margin-top:26px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  .sctop .big{font-family:Fraunces,Georgia,serif;font-size:76px;font-weight:700;line-height:1;color:var(--pink)}
+  .sctop .big small{font-family:Nunito,Arial,sans-serif;font-size:30px;font-weight:800;margin-left:6px}
+  .sctop .cap{margin-left:26px;padding-bottom:6px;font-size:22px;color:var(--muted);font-weight:700;line-height:1.35}
+  .sctop .cap b{color:var(--ink)}
+  .bio{flex:1;display:flex;flex-direction:column;justify-content:space-around;margin-top:10px}
+  .brow{display:grid;grid-template-columns:250px 100px 1fr 200px;grid-column-gap:22px;align-items:center}
+  .brow .n{font-size:23px;font-weight:800}
+  .brow .n i{display:block;font-style:normal;font-size:17px;color:var(--dim);font-weight:700;margin-top:2px}
+  .brow .mm{font-family:Fraunces,Georgia,serif;font-size:32px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+  .brow .mm small{font-family:Nunito,Arial,sans-serif;font-size:16px;color:var(--muted);font-weight:800;margin-left:4px}
+  .brow .wk{font-size:21px;color:var(--muted);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+  .btrack{position:relative;height:30px}
+  .btrack:before{content:"";position:absolute;left:0;right:0;top:14px;height:2px;background:rgba(var(--tint),.12)}
+  .btrack .ref{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed rgba(var(--pk),.6)}
+  .btrack .pt{position:absolute;top:5px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 4px rgba(var(--mt),.22)}
+  .baxis{position:relative;height:24px;font-size:17px;color:var(--dim);font-weight:700}
+  .baxis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .baxis span.r{color:var(--pink)}
+  .sclegend{display:flex;align-items:center;white-space:nowrap}
+  .lgpt{width:14px;height:14px;border-radius:50%;background:var(--mint);margin-right:8px}
+  .lgref{width:0;height:20px;border-left:2px dashed rgba(var(--pk),.8);margin:0 8px 0 22px}
+  .scside{display:flex;flex-direction:column;min-height:0}
+  .scside .card+.card{margin-top:28px}
+  .checks{padding:30px 40px 26px;display:flex;flex-direction:column;flex:1 1 auto}
+  .checks.nipt{flex:0 0 auto}
+  .clist{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-column-gap:24px;align-content:space-around;margin-top:14px}
+  .ck{display:flex;align-items:center;font-size:20px;font-weight:700;padding:6px 0}
+  .ck small{font-size:17px;color:var(--dim);font-weight:700;margin-left:8px}
+  .ck:before{content:"✓";flex:0 0 32px;height:32px;margin-right:14px;border-radius:50%;background:rgba(var(--mt),.18);color:var(--mint);
+    font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center}
+  .scnote{font-size:20px;color:var(--muted);font-weight:600;line-height:1.4;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+  .scnote b{color:var(--ink)}
+
   .dots{position:absolute;left:84px;bottom:14px;display:flex;align-items:center}
   .dot{font-size:18px;font-weight:800;color:var(--dim);margin-right:22px;letter-spacing:1px}
   .dot:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--dim);margin-right:8px;vertical-align:1px}
@@ -255,8 +292,31 @@
   html.m .nrow b{font-size:24px}
   html.m .nrow b .tl2{font-size:15px}
   html.m .nrow b small{font-size:12px;margin-left:3px}
+  html.m .scan,html.m .checks{padding:20px}
+  html.m .sctop{display:block;margin-top:14px;padding-bottom:14px}
+  html.m .sctop .big{font-size:44px}
+  html.m .sctop .big small{font-size:18px}
+  html.m .sctop .cap{margin:8px 0 0;padding:0;font-size:14px}
+  html.m .bio{margin-top:6px}
+  html.m .brow{grid-template-columns:1fr auto;grid-row-gap:6px;padding:12px 0;border-bottom:1px solid var(--line)}
+  html.m .brow .n{font-size:15px}
+  html.m .brow .n i{font-size:12px}
+  html.m .brow .mm{font-size:22px}
+  html.m .brow .mm small{font-size:12px}
+  html.m .brow .btrack{grid-column:1 / -1}
+  html.m .brow .wk{grid-column:1 / -1;text-align:left;font-size:13px}
+  html.m .baxis{font-size:12px}
+  html.m .brow.bax{display:block;border:0;padding-top:8px}
+  html.m .brow.bax>div:empty{display:none}
+  html.m .btrack,html.m .baxis{margin:0 18px}
+  html.m .clist{grid-template-columns:1fr;margin-top:10px}
+  html.m .scside{display:block}
+  html.m .scside .card+.card{margin-top:0}
+  html.m .ck small{font-size:12px}
+  html.m .ck{font-size:15px;padding:6px 0}
+  html.m .ck:before{flex-basis:24px;height:24px;font-size:14px;margin-right:10px}
+  html.m .scnote{font-size:14px}
   html.m .dots{display:none}
-  html.m .fine{position:static;text-align:center;font-size:13px;margin-top:6px}
 
   /* ===== Kalp butonu + dinleme ekranı ===== */
   .hb{display:flex;align-items:center;background:rgba(var(--pk),.1);border:2px solid rgba(var(--pk),.45);color:var(--ink);
@@ -455,7 +515,7 @@
   }
 
   /* ===== Doğumdan sonra ===== */
-  html[data-born] .hb,html[data-born] .dots,html[data-born] #p2,html[data-born] .chips,html[data-born] .hero .hr,html[data-born] .fine,html[data-born] .beats,html[data-born] .statline{display:none}
+  html[data-born] .hb,html[data-born] .dots,html[data-born] #p2,html[data-born] #p3,html[data-born] .chips,html[data-born] .hero .hr,html[data-born] .beats,html[data-born] .statline{display:none}
 
   /* ===== Azaltılmış hareket ===== */
   @media (prefers-reduced-motion:reduce){
@@ -604,10 +664,41 @@
         </section>
       </div>
     </div>
+    <!-- ===== Sayfa 3: Ultrason raporu ===== -->
+    <div class="page" id="p3">
+      <div class="row2">
+        <section class="card scan">
+          <div class="chead">
+            <div><div class="label">Ayrıntılı ultrason</div><div class="ctitle" id="scTitle"></div></div>
+            <div class="cnote sclegend"><span class="lgpt"></span>ölçümün denk geldiği hafta <span class="lgref"></span>ultrason günü</div>
+          </div>
+          <div class="sctop">
+            <div class="big" id="scEfw"></div>
+            <div class="cap" id="scCap"></div>
+          </div>
+          <div class="bio" id="scBio"></div>
+        </section>
+        <div class="scside">
+          <section class="card checks">
+            <div class="chead">
+              <div><div class="label">Organ taraması</div><div class="ctitle" id="scChkTitle"></div></div>
+              <div class="cnote" id="scPla"></div>
+            </div>
+            <div class="clist" id="scChecks"></div>
+          </section>
+          <section class="card checks nipt">
+            <div class="chead">
+              <div><div class="label">Genetik tarama · NIPT</div><div class="ctitle" id="nTitle"></div></div>
+              <div class="cnote" id="nDate"></div>
+            </div>
+            <div class="clist" id="nChecks"></div>
+          </section>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="dots"><div class="dot on" id="d1">BUGÜN</div><div class="dot" id="d2">YOLCULUK</div></div>
-  <div class="fine">Değerler ortalamadır; doktorunuzun ölçümleri esastır.</div>
+  <div class="dots"><div class="dot on" id="d1">BUGÜN</div><div class="dot" id="d2">YOLCULUK</div><div class="dot" id="d3">TESTLER</div></div>
 </div>
 
 <div class="cele" id="cele" role="status" hidden><span class="emoji" id="celeE"></span><div><b id="celeT"></b><i id="celeS"></i></div></div>
@@ -623,7 +714,6 @@
       <div class="ovside" id="ovSide"></div>
     </div>
     <canvas id="ecg"></canvas>
-    <div class="ovf">Ses ve grafik, bu haftaki ortalama bebek kalp hızına göre oluşturulmuş bir canlandırmadır; gerçek bir kayıt değildir.</div>
   </div>
 </div>
 
@@ -648,7 +738,7 @@
     </div>
     <canvas id="usCv" tabindex="0" role="application" aria-label="Ultrason ekranı. Bebeğe dokununca hareket eder."></canvas>
     <div class="uschips" id="usChips"></div>
-    <div class="ovf">Bu gerçek bir ultrason değil, eğlence için çizilmiş bir canlandırmadır. <span class="usk">Kumandada: ok tuşlarıyla gez, OK ile dokun.</span></div>
+    <div class="ovf usk">Kumandada: ok tuşlarıyla gez, OK ile dokun.</div>
   </div>
 </div>
 
@@ -834,6 +924,14 @@
     if (dblPast !== null && gaF / 7 >= 19) dblMark(gaF - dblPast, Math.round(dblPast) + ' gün önce', false);   // erken haftalarda eğri düz, etiketler sıkışır
     if (dblNext !== null && gaF / 7 >= 19) dblMark(gaF + dblNext, fmtShort(new Date(start.getTime() + (gaF + dblNext) * DAY)), true);
 
+    // ultrasondaki gerçek ölçümler
+    SCANS.forEach(function (sc) {
+      var sx = X(sc.ga[0] + sc.ga[1] / 7), sy = Y(sc.efw);
+      el('circle', { cx: sx, cy: sy, r: 8, fill: V('--lilac'), stroke: V('--bg1'), 'stroke-width': 3 }, svg);
+      if (isMobile) return;
+      el('text', { x: sx + 16, y: sy + 30, 'class': 'dlabel', style: 'fill:' + V('--lilac') }, svg, fmtShort(parse(sc.date)) + ' ultrason · ' + sc.efw + ' g');
+    });
+
     // bugün
     var nx = X(now), ny = Y(gAt(now * 7));
     el('line', { x1: nx, x2: nx, y1: ny + 12, y2: Y(0), stroke: A('--pk', .5), 'stroke-width': 2, 'stroke-dasharray': '3 5' }, svg);
@@ -849,6 +947,38 @@
     var endLabel = el('text', { x: ex - 4, y: ey - 22, 'text-anchor': 'end', 'class': 'dlabel' }, svg, 'Doğumda ~' + grams(gAt(280)));
     var ta = todayLabel.getBBox(), tb = endLabel.getBBox();     // doğuma yaklaşınca iki etiket çakışırsa "Bugün" kalsın
     if (gaF / 7 >= 38.5 || (ta.x < tb.x + tb.width && tb.x < ta.x + ta.width && ta.y < tb.y + tb.height && tb.y < ta.y + ta.height)) svg.removeChild(endLabel);
+  }
+
+  /* Ultrason raporu sayfası */
+  function drawScan() {
+    var sc = SCANS[SCANS.length - 1]; if (!sc) return;
+    var d = parse(sc.date), gaS = sc.ga[0] * 7 + sc.ga[1], avg = gAt(gaS);
+    $('scTitle').textContent = fmt(d, false) + ' · ' + sc.ga[0] + ' hafta ' + (sc.ga[1] ? sc.ga[1] + ' gün' : '');
+    $('scEfw').innerHTML = sc.efw + '<small>g</small>';
+    $('scCap').innerHTML = 'Tahmini ağırlık' + (sc.efwPct ? ' · <b>%' + sc.efwPct + '</b> persentil' : '') +
+      '<br>o haftanın ortalaması <b>~' + grams(avg) + '</b>' + (sc.comp ? ' · ölçümlere göre <b>' + sc.comp[0] + ' hf ' + sc.comp[1] + ' g</b>' : '');
+    var lo = Math.min.apply(null, sc.bio.map(function (b) { return b[3] * 7 + b[4]; }).concat(gaS)) - 4;
+    var hi = Math.max.apply(null, sc.bio.map(function (b) { return b[3] * 7 + b[4]; }).concat(gaS)) + 4;
+    lo = Math.floor(lo / 7) * 7; hi = Math.ceil(hi / 7) * 7;
+    function P(x) { return ((x - lo) / (hi - lo) * 100).toFixed(2) + '%'; }
+    var h = '';
+    sc.bio.forEach(function (b) {
+      var x = b[3] * 7 + b[4];
+      h += '<div class="brow"><div class="n">' + b[1] + '<i>' + b[0] + '</i></div><div class="mm">' + b[2] + '<small>mm</small></div>' +
+           '<div class="btrack"><div class="ref" style="left:' + P(gaS) + '"></div><div class="pt" style="left:' + P(x) + '"></div></div>' +
+           '<div class="wk">' + b[3] + ' hf ' + b[4] + ' g' + (b[5] ? ' · %' + b[5] : '') + '</div></div>';
+    });
+    var ax = '';
+    for (var w = lo; w <= hi; w += 7) if (w !== gaS) ax += '<span style="left:' + P(w) + '">' + (w / 7) + '. hf</span>';
+    ax += '<span class="r" style="left:' + P(gaS) + '">' + sc.ga[0] + '. hf</span>';
+    h += '<div class="brow bax"><div></div><div></div><div class="baxis">' + ax + '</div><div></div></div>';
+    $('scBio').innerHTML = h;
+    $('scChkTitle').textContent = sc.checks.length + ' kontrol, hepsi normal';
+    $('scChecks').innerHTML = sc.checks.map(function (c) { return '<div class="ck">' + c + '</div>'; }).join('');
+    $('scPla').textContent = 'Plasenta ' + sc.placenta;
+    $('nTitle').textContent = NIPT.items.reduce(function (t, x) { return t + (x[1] || 1); }, 0) + ' tarama, hepsi düşük risk';
+    $('nDate').textContent = fmtShort(parse(NIPT.date)) + ' · ' + NIPT.ga[0] + '. hafta';
+    $('nChecks').innerHTML = NIPT.items.map(function (x) { return '<div class="ck">' + x[0] + (x[1] ? '<small>' + x[1] + '</small>' : '') + '</div>'; }).join('');
   }
 
   /* Haftalık artış çubukları */
@@ -888,9 +1018,9 @@
   /* Meyve şeridi: 4–40. hafta, 2 haftada bir */
   function drawStrip(ga) {
     var wk = Math.floor(ga / 7), html = '';
-    var curEven = wk - (wk % 2);
-    for (var w = 4; w <= 40; w += 2) {
-      var cls = w < curEven ? 'past' : (w === curEven ? 'cur' : 'future');
+    var cw = Math.max(4, Math.min(40, wk));
+    for (var w = 4; w <= 40; w++) {
+      var cls = w < cw ? 'past' : (w === cw ? 'cur' : 'future');
       html += '<div class="fw ' + cls + '"><span class="emoji">' + SIZES[w][0] + '</span><b>' + w + '</b></div>';
     }
     $('strip').innerHTML = html;
@@ -924,6 +1054,21 @@
       prev = segs[j][0];
     }
   }
+
+  /* ==== ULTRASON RAPORLARI ====  yeni rapor gelince sona ekle; site en sonuncuyu gösterir */
+  var SCANS = [
+    { date: '2026-10-14', title: 'Ayrıntılı ultrason', ga: [22, 0], efw: 451, efwPct: 33, comp: [21, 2],
+      bio: [ ['BPD', 'Baş çapı', 49, 21, 0, 12], ['HC', 'Baş çevresi', 189, 21, 1, 12], ['AC', 'Karın çevresi', 168, 21, 5, 35],
+             ['FL', 'Uyluk kemiği', 38, 22, 0, 41], ['HL', 'Kol kemiği', 35, 22, 1], ['CEREB', 'Beyincik', 21, 20, 0] ],
+      checks: ['Beyin yapıları', 'Dört odacıklı kalp', 'Aort kavsi', 'Büyük damarlar', 'Üç damarlı kordon', 'Kollar ve bacaklar',
+               'Omurga (boyun, sırt, bel)', 'Karın ön duvarı', 'Mide (solda)', 'Mesane', 'Bağırsaklar', 'Amniyon sıvısı',
+               'Rahim atardamarı akımı'],
+      placenta: 'arka duvarda' }
+  ];
+  /* NIPT (hücre dışı DNA) genetik tarama sonucu */
+  var NIPT = { date: '2026-07-29', ga: [10, 5], ff: 6.06,
+    items: [['Down sendromu (T21)'], ['Edwards sendromu (T18)'], ['Patau sendromu (T13)'],
+            ['Cinsiyet kromozomları', 4], ['Diğer kromozomlar', 19], ['Mikrodelesyonlar', 5]] };
 
   /* ---------- Hesaplar ---------- */
   var lmp = parse(CONFIG.lmp), adj = CONFIG.cycle - 28;
@@ -1153,6 +1298,7 @@
     drawWeight(ga, gaF, past, futu);
     drawGain(ga);
     drawStrip(ga);
+    drawScan();
     heroCopy();
   }
 
@@ -1309,7 +1455,6 @@
   var KNOWN = parse('2026-07-07'), SEX_KNOWN = parse('2026-08-07');   // varlığını ve kız olduğunu öğrendiğimiz günler
   var SYNODIC = 29.530588853, MOONS = ['Yeni Ay','Hilal','İlk Dördün','Şişkin Ay','Dolunay','Şişkin Ay','Son Dördün','Hilal'];
   var MOON_E = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
-  var STONES = ['granat','ametist','akuamarin','elmas','zümrüt','inci','yakut','peridot','safir','opal','topaz','firuze'];
   var isAyla = /^Ayla/.test(CONFIG.name);
   function moonAge(t) { var d = (t - Date.UTC(2000, 0, 6, 18, 14)) / DAY; return (d % SYNODIC + SYNODIC) % SYNODIC; }
   function moonIdx(t) { return Math.floor(moonAge(t) / SYNODIC * 8 + 0.5) % 8; }
@@ -1351,11 +1496,23 @@
     { id: 'adult', e: '🎓', after: 1, t: function () {
         var d = birthDay();
         return '18 yaşına ' + fmt(new Date(d.getFullYear() + 18, d.getMonth(), d.getDate()), true) + ' günü basacak'; } },
-    { id: 'stone', e: '💎', after: 1, t: function () {
-        var d = birthDay();
-        return MONTHS[d.getMonth()] + ' doğumlularının taşı ' + STONES[d.getMonth()]; } },
-    { id: 'china', e: '🐐', t: function () {
-        return due.getFullYear() === 2027 && due >= parse('2027-02-06') && daysLeft() > 0 ? 'Çin takviminde Keçi yılı; 6 Şubat’tan önce gelirse At' : null; } },
+    { id: 'usKg', e: '🩻', t: function () {
+        var sc = SCANS[SCANS.length - 1];
+        return sc && daysLeft() > 0 ? fmtShort(parse(sc.date)) + ' ultrasonunda ' + sc.efw + ' gramdı, şimdi ~' + grams(gAt((Date.now() - start) / DAY)) : null; } },
+    { id: 'usBone', e: '🦴', t: function () {
+        var sc = SCANS[SCANS.length - 1], fl = sc && sc.bio.filter(function (b) { return b[0] === 'FL'; })[0];
+        return fl && daysLeft() > 0 ? 'Ultrasonda uyluk kemiği ' + dec(fl[2] / 10, 1) + ' cm’di, bir ataş boyu' : null; } },
+    { id: 'usHeart', e: '🫀', t: function () { return SCANS.length && daysLeft() > 0 ? 'Ayrıntılı ultrasonda kalbinin dört odacığı da normal göründü' : null; } },
+    { id: 'kicks', e: '🦶', t: function () {
+        var sc = SCANS[SCANS.length - 1];
+        return sc && /arka/.test(sc.placenta) && daysLeft() > 0 ? 'Plasentası arkada; bu yüzden tekmeleri önden daha net hissedilir' : null; } },
+    { id: 'nipt', e: '🧬', t: function () { return daysLeft() > 0 ? 'Genetik taramada 31 testin hepsi düşük risk çıktı' : null; } },
+    { id: 'heartx2', e: '💓', t: function () { return daysLeft() > 0 ? 'Kalbi seninkinden neredeyse iki kat hızlı atıyor' : null; } },
+    { id: 'taste', e: '🍓', t: function () { return daysLeft() > 0 && (Date.now() - start) / DAY >= 21 * 7 ? 'Annenin yediklerinin tadını amniyon sıvısından alıyor' : null; } },
+    { id: 'hear', e: '👂', t: function () { return daysLeft() > 0 && (Date.now() - start) / DAY >= 24 * 7 ? 'Sesinizi duyabiliyor; doğunca en çok sizin sesinizi tanıyacak' : null; } },
+    { id: 'prints', e: '🖐️', after: 1, t: function () { return (Date.now() - start) / DAY >= 17 * 7 ? 'Parmak izleri oluştu; dünyada yalnızca ona ait' : null; } },
+    { id: 'bones', e: '🦴', after: 1, t: function () { return 'Bebekler 300 kadar kemikle doğar; bazıları büyüdükçe birleşip 206’ya iner'; } },
+    { id: 'world', e: '🌍', t: function () { return daysLeft() > 0 ? 'Doğduğu gün dünyada onunla birlikte yaklaşık 370 bin bebek doğacak' : null; } },
     { id: 'exact', e: '🎯', t: function () { return daysLeft() > 0 ? 'Bebeklerin %5 kadarı tam tahmini günde doğar' : null; } },
     { id: 'sign', e: '🔮', open: 'sign', after: 1, t: function () {
         var d = birthDay(), sure = isBorn();
@@ -1446,7 +1603,7 @@
     html += '<div class="sgcols">' + p.map(function (n) {
       var x = SIGN_INFO[n];
       return '<div class="sgcol"><span class="sg" aria-hidden="true">' + sg(n) + '</span><b>' + n + '</b><div class="d">' + x[0] + '</div><div class="e">' + x[1] + '</div><p>' + x[2] + '</p></div>';
-    }).join('') + '</div><p class="ovf">Burç yorumları eğlence içindir, bilimsel bir dayanağı yoktur.</p>';
+    }).join('') + '</div>';
     $('inBody').innerHTML = html;
   }
   function panelWeather() {
@@ -1502,11 +1659,12 @@
   /* ---------- Sayfa geçişi ---------- */
   var page = 0, rotTimer = null;
   function show(i) {
-    page = isBorn() ? 0 : (i + 2) % 2;
-    $('p1').className = 'page' + (page === 0 ? ' on' : '');
-    $('p2').className = 'page' + (page === 1 ? ' on' : '');
-    $('d1').className = 'dot' + (page === 0 ? ' on' : '');
-    $('d2').className = 'dot' + (page === 1 ? ' on' : '');
+    var n = SCANS.length ? 3 : 2;
+    page = isBorn() ? 0 : (i + n) % n;
+    for (var k = 1; k <= 3; k++) {
+      $('p' + k).className = 'page' + (page === k - 1 ? ' on' : '');
+      $('d' + k).className = 'dot' + (page === k - 1 ? ' on' : '');
+    }
   }
   function restartRotation() {
     if (rotTimer) clearInterval(rotTimer);
@@ -2446,7 +2604,7 @@
   window.addEventListener('resize', fit);
   started = true;
   render();
-  if (qp('page') === '2') show(1);
+  if (qp('page')) show((parseInt(qp('page'), 10) || 1) - 1);
   setInterval(render, 5000);   // saat, tema, halka ve çubuk
   setTimeout(function () { visitReady = true; render(); }, 1200);   // önce sayfa görünsün
   factNext();
