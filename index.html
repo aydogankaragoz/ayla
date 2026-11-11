@@ -47,7 +47,7 @@
     padding:56px 84px;display:grid;grid-template-rows:auto 1fr;grid-row-gap:28px}
 
   header{display:flex;justify-content:space-between;align-items:center}
-  .who{display:flex;align-items:center}
+  .who{display:flex;align-items:center;flex:1 1 auto;min-width:0;margin-right:36px}
   .photo{width:132px;height:132px;border-radius:50%;object-fit:cover;margin-right:30px;
     border:4px solid var(--pink);box-shadow:0 10px 28px var(--shadow)}
   h1{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:66px;letter-spacing:-1px;line-height:1}
@@ -215,7 +215,7 @@
   html.m #stage{position:relative;width:auto;height:auto;transform:none !important;display:block;
     padding:20px 16px 28px;padding-top:max(20px,env(safe-area-inset-top))}
   html.m header{display:flex;flex-wrap:wrap;align-items:center;margin-bottom:18px}
-  html.m .who{flex:1 1 100%}
+  html.m .who{flex:1 1 100%;margin-right:0}
   html.m .photo{width:72px;height:72px;margin-right:16px;border-width:3px;box-shadow:0 6px 16px var(--shadow)}
   html.m h1{font-size:28px;letter-spacing:-.5px;white-space:nowrap}
   html.m h1 .heart{font-size:24px;margin-left:6px;vertical-align:3px}
@@ -441,9 +441,11 @@
   .who>div{min-width:0}
   .nameb,.fact,.signb{background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer;
     touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-  .fact{display:flex;align-items:center;max-width:680px;margin-top:10px;font-size:24px;font-weight:700;color:var(--muted);white-space:nowrap;transition:opacity .4s,color .2s}
+  .fact{display:flex;align-items:center;max-width:680px;margin-top:10px;font-size:24px;line-height:1.25;font-weight:700;color:var(--muted);text-align:left;transition:opacity .4s,color .2s}
   .fact.sw{opacity:0}
   .fact .emoji{font-size:28px;margin-right:10px;flex:none}
+  #factT{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+  .hb,.clock{flex:none}
   .factgo{color:var(--pink);margin-left:8px;font-weight:800}
   .signb{display:block;color:var(--muted)}
   .page.on .signb{pointer-events:auto}   /* sayfalar tıklamayı kapatır; görünen sayfadaki burç satırı açık kalsın */
