@@ -63,7 +63,6 @@
   .page.on{opacity:1}
   #p1{grid-template-rows:1fr auto}
   #p2{grid-template-rows:1fr auto}
-  #p3{grid-template-rows:1fr}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:34px;padding:40px 44px;
     position:relative;overflow:hidden}
@@ -144,6 +143,12 @@
   .dlabel,.dsub,.dbl{paint-order:stroke;stroke:var(--bg1);stroke-width:3px;stroke-linejoin:round}
   .dsub{font-family:Nunito,Arial,sans-serif;font-size:19px;font-weight:700;fill:var(--muted)}
   .dbl{font-family:Nunito,Arial,sans-serif;font-size:21px;font-weight:800;fill:var(--mint)}
+  .page.on .chart{pointer-events:auto}
+  .chart{cursor:crosshair;touch-action:pan-y;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+  .chart svg .fade{transition:opacity .2s}
+  .chart.insp svg .fade{opacity:.18}
+  .ipv{font-family:Fraunces,Georgia,serif;font-size:30px;font-weight:700;fill:var(--ink)}
+  .ips{font-family:Nunito,Arial,sans-serif;font-size:18px;font-weight:700;fill:var(--muted)}
 
   .foot2{display:grid;grid-template-columns:2.2fr 1fr;grid-column-gap:40px}
   .journey{padding:30px 40px 24px;display:flex;flex-direction:column}
@@ -166,42 +171,6 @@
   .nrow b .tl2{font-size:22px;letter-spacing:0}
   .nrow b small{font-family:Nunito,Arial,sans-serif;font-size:18px;font-weight:800;margin-left:5px;color:var(--muted)}
 
-
-  /* ===== Sayfa 3: Ultrason raporu ===== */
-  .scan{padding:34px 40px 30px;display:flex;flex-direction:column}
-  .sctop{display:flex;align-items:flex-end;margin-top:26px;padding-bottom:22px;border-bottom:1px solid var(--line)}
-  .sctop .big{font-family:Fraunces,Georgia,serif;font-size:76px;font-weight:700;line-height:1;color:var(--pink)}
-  .sctop .big small{font-family:Nunito,Arial,sans-serif;font-size:30px;font-weight:800;margin-left:6px}
-  .sctop .cap{margin-left:26px;padding-bottom:6px;font-size:22px;color:var(--muted);font-weight:700;line-height:1.35}
-  .sctop .cap b{color:var(--ink)}
-  .bio{flex:1;display:flex;flex-direction:column;justify-content:space-around;margin-top:10px}
-  .brow{display:grid;grid-template-columns:250px 100px 1fr 200px;grid-column-gap:22px;align-items:center}
-  .brow .n{font-size:23px;font-weight:800}
-  .brow .n i{display:block;font-style:normal;font-size:17px;color:var(--dim);font-weight:700;margin-top:2px}
-  .brow .mm{font-family:Fraunces,Georgia,serif;font-size:32px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
-  .brow .mm small{font-family:Nunito,Arial,sans-serif;font-size:16px;color:var(--muted);font-weight:800;margin-left:4px}
-  .brow .wk{font-size:21px;color:var(--muted);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
-  .btrack{position:relative;height:30px}
-  .btrack:before{content:"";position:absolute;left:0;right:0;top:14px;height:2px;background:rgba(var(--tint),.12)}
-  .btrack .ref{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed rgba(var(--pk),.6)}
-  .btrack .pt{position:absolute;top:5px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 4px rgba(var(--mt),.22)}
-  .baxis{position:relative;height:24px;font-size:17px;color:var(--dim);font-weight:700}
-  .baxis span{position:absolute;transform:translateX(-50%);white-space:nowrap}
-  .baxis span.r{color:var(--pink)}
-  .sclegend{display:flex;align-items:center;white-space:nowrap}
-  .lgpt{width:14px;height:14px;border-radius:50%;background:var(--mint);margin-right:8px}
-  .lgref{width:0;height:20px;border-left:2px dashed rgba(var(--pk),.8);margin:0 8px 0 22px}
-  .scside{display:flex;flex-direction:column;min-height:0}
-  .scside .card+.card{margin-top:28px}
-  .checks{padding:30px 40px 26px;display:flex;flex-direction:column;flex:1 1 auto}
-  .checks.nipt{flex:0 0 auto}
-  .clist{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-column-gap:24px;align-content:space-around;margin-top:14px}
-  .ck{display:flex;align-items:center;font-size:20px;font-weight:700;padding:6px 0}
-  .ck small{font-size:17px;color:var(--dim);font-weight:700;margin-left:8px}
-  .ck:before{content:"✓";flex:0 0 32px;height:32px;margin-right:14px;border-radius:50%;background:rgba(var(--mt),.18);color:var(--mint);
-    font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center}
-  .scnote{font-size:20px;color:var(--muted);font-weight:600;line-height:1.4;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
-  .scnote b{color:var(--ink)}
 
   .dots{position:absolute;left:84px;bottom:14px;display:flex;align-items:center}
   .dot{font-size:18px;font-weight:800;color:var(--dim);margin-right:22px;letter-spacing:1px}
@@ -276,6 +245,8 @@
   html.m .dlabel{font-size:13px}
   html.m .dsub{font-size:12px}
   html.m .dbl{font-size:13px}
+  html.m .ipv{font-size:18px}
+  html.m .ips{font-size:12px}
   html.m .journey{padding:20px 0 14px}
   html.m .journey .label{padding:0 20px}
   html.m .strip{justify-content:flex-start;overflow-x:auto;overscroll-behavior-x:contain;height:86px;padding:0 20px 4px;margin-top:10px;position:relative;-webkit-overflow-scrolling:touch}
@@ -292,30 +263,6 @@
   html.m .nrow b{font-size:24px}
   html.m .nrow b .tl2{font-size:15px}
   html.m .nrow b small{font-size:12px;margin-left:3px}
-  html.m .scan,html.m .checks{padding:20px}
-  html.m .sctop{display:block;margin-top:14px;padding-bottom:14px}
-  html.m .sctop .big{font-size:44px}
-  html.m .sctop .big small{font-size:18px}
-  html.m .sctop .cap{margin:8px 0 0;padding:0;font-size:14px}
-  html.m .bio{margin-top:6px}
-  html.m .brow{grid-template-columns:1fr auto;grid-row-gap:6px;padding:12px 0;border-bottom:1px solid var(--line)}
-  html.m .brow .n{font-size:15px}
-  html.m .brow .n i{font-size:12px}
-  html.m .brow .mm{font-size:22px}
-  html.m .brow .mm small{font-size:12px}
-  html.m .brow .btrack{grid-column:1 / -1}
-  html.m .brow .wk{grid-column:1 / -1;text-align:left;font-size:13px}
-  html.m .baxis{font-size:12px}
-  html.m .brow.bax{display:block;border:0;padding-top:8px}
-  html.m .brow.bax>div:empty{display:none}
-  html.m .btrack,html.m .baxis{margin:0 18px}
-  html.m .clist{grid-template-columns:1fr;margin-top:10px}
-  html.m .scside{display:block}
-  html.m .scside .card+.card{margin-top:0}
-  html.m .ck small{font-size:12px}
-  html.m .ck{font-size:15px;padding:6px 0}
-  html.m .ck:before{flex-basis:24px;height:24px;font-size:14px;margin-right:10px}
-  html.m .scnote{font-size:14px}
   html.m .dots{display:none}
 
   /* ===== Kalp butonu + dinleme ekranı ===== */
@@ -517,7 +464,7 @@
   }
 
   /* ===== Doğumdan sonra ===== */
-  html[data-born] .hb,html[data-born] .dots,html[data-born] #p2,html[data-born] #p3,html[data-born] .chips,html[data-born] .hero .hr,html[data-born] .beats,html[data-born] .statline{display:none}
+  html[data-born] .hb,html[data-born] .dots,html[data-born] #p2,html[data-born] .chips,html[data-born] .hero .hr,html[data-born] .beats,html[data-born] .statline{display:none}
 
   /* ===== Azaltılmış hareket ===== */
   @media (prefers-reduced-motion:reduce){
@@ -641,7 +588,7 @@
         <section class="card chartcard">
           <div class="chead">
             <div><div class="label">Ağırlık yolculuğu</div><div class="ctitle" id="wTitle"></div></div>
-            <div class="cnote">8. haftadan doğuma, ortalama gram</div>
+            <div class="cnote">8. haftadan doğuma, ortalama gram · dokunup kaydırın</div>
           </div>
           <div class="csub" id="dblLine"></div>
           <div class="chart" id="wChart"></div>
@@ -649,6 +596,7 @@
         <section class="card chartcard">
           <div class="chead">
             <div><div class="label">Haftalık kilo artışı</div><div class="ctitle" id="gTitle"></div></div>
+            <div class="cnote" style="white-space:nowrap">dokunup kaydırın</div>
           </div>
           <div class="chart" id="gChart"></div>
         </section>
@@ -666,41 +614,9 @@
         </section>
       </div>
     </div>
-    <!-- ===== Sayfa 3: Ultrason raporu ===== -->
-    <div class="page" id="p3">
-      <div class="row2">
-        <section class="card scan">
-          <div class="chead">
-            <div><div class="label">Ayrıntılı ultrason</div><div class="ctitle" id="scTitle"></div></div>
-            <div class="cnote sclegend"><span class="lgpt"></span>ölçümün denk geldiği hafta <span class="lgref"></span>ultrason günü</div>
-          </div>
-          <div class="sctop">
-            <div class="big" id="scEfw"></div>
-            <div class="cap" id="scCap"></div>
-          </div>
-          <div class="bio" id="scBio"></div>
-        </section>
-        <div class="scside">
-          <section class="card checks">
-            <div class="chead">
-              <div><div class="label">Organ taraması</div><div class="ctitle" id="scChkTitle"></div></div>
-              <div class="cnote" id="scPla"></div>
-            </div>
-            <div class="clist" id="scChecks"></div>
-          </section>
-          <section class="card checks nipt">
-            <div class="chead">
-              <div><div class="label">Genetik tarama · NIPT</div><div class="ctitle" id="nTitle"></div></div>
-              <div class="cnote" id="nDate"></div>
-            </div>
-            <div class="clist" id="nChecks"></div>
-          </section>
-        </div>
-      </div>
-    </div>
   </div>
 
-  <div class="dots"><div class="dot on" id="d1">BUGÜN</div><div class="dot" id="d2">YOLCULUK</div><div class="dot" id="d3">TESTLER</div></div>
+  <div class="dots"><div class="dot on" id="d1">BUGÜN</div><div class="dot" id="d2">YOLCULUK</div></div>
 </div>
 
 <div class="cele" id="cele" role="status" hidden><span class="emoji" id="celeE"></span><div><b id="celeT"></b><i id="celeS"></i></div></div>
@@ -868,6 +784,53 @@
   function V(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
   function A(name, a) { return 'rgba(' + V(name) + ',' + a + ')'; }
 
+  /* ---------- Grafiğe dokununca o haftanın değeri ---------- */
+  function wkText(d) { var w = Math.floor(d / 7), r = d % 7; return w + ' hafta' + (r ? ' ' + r + ' gün' : ''); }
+  function dayDate(d) { return fmtShort(new Date(start.getFullYear(), start.getMonth(), start.getDate() + d)); }
+  function dayRange(d0, d1) {
+    var a = addDays(start, d0), b = addDays(start, d1);
+    return a.getMonth() === b.getMonth() ? a.getDate() + '–' + fmtShort(b) : fmtShort(a) + ' – ' + fmtShort(b);
+  }
+  function inspectable(box, geo) {
+    geo.svg = box.querySelector('svg');
+    Array.prototype.forEach.call(geo.svg.querySelectorAll('.dlabel,.dsub,.dbl'), function (t) { t.classList.add('fade'); });
+    box._geo = geo;
+    if (box._sel !== undefined) inspectAt(box, box._sel);
+    if (box._wired) return;
+    box._wired = true;
+    function px(e) { var r = box.getBoundingClientRect(); return (e.clientX - r.left) * (box._geo.W / r.width); }
+    box.addEventListener('pointerdown', function (e) { box._down = true; inspectAt(box, px(e)); restartRotation(); });
+    box.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse' || box._down) inspectAt(box, px(e)); });
+    box.addEventListener('pointerup', function () { box._down = false; restartRotation(); });
+    box.addEventListener('pointercancel', function () { box._down = false; });
+    box.addEventListener('pointerleave', function (e) { box._down = false; if (e.pointerType === 'mouse') inspectOff(box); });
+    document.addEventListener('pointerdown', function (e) { if (!box.contains(e.target)) inspectOff(box); });
+  }
+  function inspectOff(box) {
+    delete box._sel;
+    box.classList.remove('insp');
+    var g = box._geo && box._geo.svg.querySelector('.ip'); if (g) g.parentNode.removeChild(g);
+  }
+  function inspectAt(box, x) {
+    var geo = box._geo; if (!geo) return;
+    var p = geo.pick(Math.max(geo.L, Math.min(geo.L + geo.pw, x)));
+    box._sel = x;
+    box.classList.add('insp');
+    var svg = geo.svg, old = svg.querySelector('.ip'); if (old) svg.removeChild(old);
+    var g = el('g', { 'class': 'ip', 'pointer-events': 'none' }, svg);
+    el('line', { x1: p.x, x2: p.x, y1: geo.T - 6, y2: geo.T + geo.ph, stroke: A('--tint', .45), 'stroke-width': 1.5, 'stroke-dasharray': '4 5' }, g);
+    if (p.mark) p.mark(g);
+    var bg = el('rect', { rx: isMobile ? 10 : 14, fill: V('--bg1'), stroke: A('--tint', .22), 'stroke-width': 1.5 }, g);
+    var t1 = el('text', { 'class': 'ipv' }, g, p.value), t2 = el('text', { 'class': 'ips' }, g, p.sub);
+    var padX = isMobile ? 10 : 16, padY = isMobile ? 7 : 12, gap = isMobile ? 4 : 6;
+    var b1 = t1.getBBox(), b2 = t2.getBBox(), bw = Math.max(b1.width, b2.width) + padX * 2, bh = b1.height + b2.height + gap + padY * 2;
+    var bx = Math.max(2, Math.min(geo.W - bw - 2, p.x - bw / 2));
+    var by = p.y - bh - 18; if (by < 0) by = Math.min(geo.H - bh - 2, p.y + 22);
+    bg.setAttribute('x', bx); bg.setAttribute('y', by); bg.setAttribute('width', bw); bg.setAttribute('height', bh);
+    t1.setAttribute('x', bx + padX); t1.setAttribute('y', by + padY - b1.y);
+    t2.setAttribute('x', bx + padX); t2.setAttribute('y', by + padY + b1.height + gap - b2.y);
+  }
+
   /* Ağırlık eğrisi: geçmiş dolu çizgi, gelecek kesikli */
   function drawWeight(ga, gaF, dblPast, dblNext) {
     var c = makeSvg($('wChart')), svg = c.svg;
@@ -949,38 +912,12 @@
     var endLabel = el('text', { x: ex - 4, y: ey - 22, 'text-anchor': 'end', 'class': 'dlabel' }, svg, 'Doğumda ~' + grams(gAt(280)));
     var ta = todayLabel.getBBox(), tb = endLabel.getBBox();     // doğuma yaklaşınca iki etiket çakışırsa "Bugün" kalsın
     if (gaF / 7 >= 38.5 || (ta.x < tb.x + tb.width && tb.x < ta.x + ta.width && ta.y < tb.y + tb.height && tb.y < ta.y + ta.height)) svg.removeChild(endLabel);
-  }
 
-  /* Ultrason raporu sayfası */
-  function drawScan() {
-    var sc = SCANS[SCANS.length - 1]; if (!sc) return;
-    var d = parse(sc.date), gaS = sc.ga[0] * 7 + sc.ga[1], avg = gAt(gaS);
-    $('scTitle').textContent = fmt(d, false) + ' · ' + sc.ga[0] + ' hafta ' + (sc.ga[1] ? sc.ga[1] + ' gün' : '');
-    $('scEfw').innerHTML = sc.efw + '<small>g</small>';
-    $('scCap').innerHTML = 'Tahmini ağırlık' + (sc.efwPct ? ' · <b>%' + sc.efwPct + '</b> persentil' : '') +
-      '<br>o haftanın ortalaması <b>~' + grams(avg) + '</b>' + (sc.comp ? ' · ölçümlere göre <b>' + sc.comp[0] + ' hf ' + sc.comp[1] + ' g</b>' : '');
-    var lo = Math.min.apply(null, sc.bio.map(function (b) { return b[3] * 7 + b[4]; }).concat(gaS)) - 4;
-    var hi = Math.max.apply(null, sc.bio.map(function (b) { return b[3] * 7 + b[4]; }).concat(gaS)) + 4;
-    lo = Math.floor(lo / 7) * 7; hi = Math.ceil(hi / 7) * 7;
-    function P(x) { return ((x - lo) / (hi - lo) * 100).toFixed(2) + '%'; }
-    var h = '';
-    sc.bio.forEach(function (b) {
-      var x = b[3] * 7 + b[4];
-      h += '<div class="brow"><div class="n">' + b[1] + '<i>' + b[0] + '</i></div><div class="mm">' + b[2] + '<small>mm</small></div>' +
-           '<div class="btrack"><div class="ref" style="left:' + P(gaS) + '"></div><div class="pt" style="left:' + P(x) + '"></div></div>' +
-           '<div class="wk">' + b[3] + ' hf ' + b[4] + ' g' + (b[5] ? ' · %' + b[5] : '') + '</div></div>';
-    });
-    var ax = '';
-    for (var w = lo; w <= hi; w += 7) if (w !== gaS) ax += '<span style="left:' + P(w) + '">' + (w / 7) + '. hf</span>';
-    ax += '<span class="r" style="left:' + P(gaS) + '">' + sc.ga[0] + '. hf</span>';
-    h += '<div class="brow bax"><div></div><div></div><div class="baxis">' + ax + '</div><div></div></div>';
-    $('scBio').innerHTML = h;
-    $('scChkTitle').textContent = sc.checks.length + ' kontrol, hepsi normal';
-    $('scChecks').innerHTML = sc.checks.map(function (c) { return '<div class="ck">' + c + '</div>'; }).join('');
-    $('scPla').textContent = 'Plasenta ' + sc.placenta;
-    $('nTitle').textContent = NIPT.items.reduce(function (t, x) { return t + (x[1] || 1); }, 0) + ' tarama, hepsi düşük risk';
-    $('nDate').textContent = fmtShort(parse(NIPT.date)) + ' · ' + NIPT.ga[0] + '. hafta';
-    $('nChecks').innerHTML = NIPT.items.map(function (x) { return '<div class="ck">' + x[0] + (x[1] ? '<small>' + x[1] + '</small>' : '') + '</div>'; }).join('');
+    inspectable($('wChart'), { L: L, pw: pw, T: T, ph: ph, W: c.W, H: c.H, pick: function (px) {
+      var d = Math.round((x0 + (px - L) / pw * (x1 - x0)) * 7), gx = X(d / 7), gy = Y(gAt(d));
+      return { x: gx, y: gy, value: '~' + grams(gAt(d)), sub: wkText(d) + ' · ' + dayDate(d),
+        mark: function (g) { el('circle', { cx: gx, cy: gy, r: 8, fill: V('--pink'), stroke: V('--bg1'), 'stroke-width': 3 }, g); } };
+    } });
   }
 
   /* Haftalık artış çubukları */
@@ -1015,6 +952,13 @@
       el('text', { x: curX, y: ly, 'text-anchor': anchor, 'class': 'dlabel' }, svg, 'Bu hafta +' + curVal + ' g');
     }
     $('gTitle').textContent = 'En hızlı büyüme ' + peak + '. haftada: +' + Math.round(peakVal) + ' g';
+
+    inspectable($('gChart'), { L: L, pw: pw, T: T, ph: ph, W: c.W, H: c.H, pick: function (px) {
+      var w = Math.max(w0, Math.min(w1, w0 + Math.floor((px - L) / slot)));
+      var v = Math.round(gAt(w * 7) - gAt((w - 1) * 7)), bx = L + (w - w0) * slot + 2, by = Y(v);
+      return { x: bx + bw / 2, y: by, value: '+' + v + ' g', sub: w + '. hafta · toplam ~' + grams(gAt(w * 7)) + ' · ' + dayRange((w - 1) * 7, w * 7 - 1),
+        mark: function (g) { el('rect', { x: bx - 2, y: by - 2, width: bw + 4, height: Math.max(Y(0) - by, 2) + 4, rx: 4, fill: 'none', stroke: V('--ink'), 'stroke-width': 2 }, g); } };
+    } });
   }
 
   /* Meyve şeridi: 4–40. hafta, 2 haftada bir */
@@ -1067,11 +1011,6 @@
                'Rahim atardamarı akımı'],
       placenta: 'arka duvarda' }
   ];
-  /* NIPT (hücre dışı DNA) genetik tarama sonucu */
-  var NIPT = { date: '2026-07-29', ga: [10, 5], ff: 6.06,
-    items: [['Down sendromu (T21)'], ['Edwards sendromu (T18)'], ['Patau sendromu (T13)'],
-            ['Cinsiyet kromozomları', 4], ['Diğer kromozomlar', 19], ['Mikrodelesyonlar', 5]] };
-
   /* ---------- Hesaplar ---------- */
   var lmp = parse(CONFIG.lmp), adj = CONFIG.cycle - 28;
   var start = addDays(lmp, adj);              // döngüye göre düzeltilmiş "0. gün"
@@ -1300,7 +1239,6 @@
     drawWeight(ga, gaF, past, futu);
     drawGain(ga);
     drawStrip(ga);
-    drawScan();
     heroCopy();
   }
 
@@ -1485,9 +1423,6 @@
     { id: 'beats', e: '💗', t: function () {
         var n = beatsAt((Date.now() - start) / DAY) - beatsAt((KNOWN - start) / DAY);
         return isAyla && n >= 1e6 ? 'Öğrendiğimizden beri kalbi ' + Math.round(n / 1e6) + ' milyon kez attı' : null; } },
-    { id: 'earth', e: '🌍', t: function () {                  // Dünya yörüngesi: yılda yaklaşık 940 milyon km
-        var km = sinceKnown() * 940 / 365.25;
-        return isAyla && km >= 1 ? 'Öğrendiğimizden beri Dünya ' + Math.round(km) + ' milyon km yol aldı' : null; } },
     { id: 'bread', e: '🥖', t: function () {
         var g = gAt((Date.now() - start) / DAY);
         return g >= 100 ? 'Şu an ' + dec(g / 200, 1) + ' ekmek ağırlığında' : null; } },
@@ -1661,9 +1596,8 @@
   /* ---------- Sayfa geçişi ---------- */
   var page = 0, rotTimer = null;
   function show(i) {
-    var n = SCANS.length ? 3 : 2;
-    page = isBorn() ? 0 : (i + n) % n;
-    for (var k = 1; k <= 3; k++) {
+    page = isBorn() ? 0 : (i + 2) % 2;
+    for (var k = 1; k <= 2; k++) {
       $('p' + k).className = 'page' + (page === k - 1 ? ' on' : '');
       $('d' + k).className = 'dot' + (page === k - 1 ? ' on' : '');
     }
