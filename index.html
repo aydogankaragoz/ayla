@@ -1498,6 +1498,72 @@
   var I = { open: false, from: null, timers: [] };
   function inClearTimers() { I.timers.forEach(clearTimeout); I.timers = []; }
   function inAfter(ms, fn) { I.timers.push(setTimeout(fn, ms)); }
+  /* İsim animasyonunun pırıltı sesi: Web Audio ile çan tınıları, hafif yankı */
+  var NS = null;
+  function nsStop() {
+    if (!NS) return;
+    var b = NS, t = b.c.currentTime;
+    b.out.gain.cancelScheduledValues(t);
+    b.out.gain.setValueAtTime(b.out.gain.value, t);
+    b.out.gain.linearRampToValueAtTime(0, t + 0.25);
+    setTimeout(function () { try { b.out.disconnect(); } catch (e) {} }, 400);
+    NS = null;
+  }
+  function nsStart() {
+    nsStop();
+    var c = audioCtx();
+    if (!c) return null;
+    var out = c.createGain(); out.gain.value = 1; out.connect(c.destination);
+    var dry = c.createGain(); dry.gain.value = 1; dry.connect(out);
+    var dl = c.createDelay(1), fb = c.createGain(), dlp = c.createBiquadFilter(), wet = c.createGain();
+    dl.delayTime.value = 0.21; fb.gain.value = 0.38; dlp.type = 'lowpass'; dlp.frequency.value = 3600; wet.gain.value = 0.4;
+    dry.connect(dl); dl.connect(dlp); dlp.connect(fb); fb.connect(dl); dlp.connect(wet); wet.connect(out);
+    NS = { c: c, out: out, bus: dry, t0: c.currentTime + 0.03 };
+    return NS;
+  }
+  function nsBell(at, f, vol, dur, atk) {           // sinüs + uyumsuz kısmi = çan
+    if (!NS) return;
+    var c = NS.c, t = NS.t0 + at;
+    [[1, 1], [2.76, 0.28], [5.4, 0.08]].forEach(function (p) {
+      var o = c.createOscillator(), g = c.createGain();
+      o.type = 'sine'; o.frequency.value = f * p[0]; o.detune.value = Math.random() * 6 - 3;
+      var d = dur / (p[0] > 1 ? p[0] * 0.7 : 1);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol * p[1], t + (atk || 0.006));
+      g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g); g.connect(NS.bus); o.start(t); o.stop(t + d + 0.05);
+    });
+  }
+  function nsAir(at, dur, vol) {                    // harfler süzülürken ince bir hava sesi
+    if (!NS || !H.noise) return;
+    var c = NS.c, t = NS.t0 + at, s = c.createBufferSource(), hp = c.createBiquadFilter(), g = c.createGain();
+    s.buffer = H.noise; s.loop = true;
+    hp.type = 'bandpass'; hp.Q.value = 0.8;
+    hp.frequency.setValueAtTime(2500, t); hp.frequency.exponentialRampToValueAtTime(7000, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + dur * 0.6);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(hp); hp.connect(g); g.connect(NS.bus); s.start(t); s.stop(t + dur + 0.05);
+  }
+  function nameSound(calm) {
+    if (!nsStart()) return;
+    var A5 = 880, E6 = 1318.5;
+    if (calm) {                                       // hareket azaltılmışsa yalnızca son akor
+      [440, 659.3, 880, 1108.7].forEach(function (f, i) { nsBell(0.1 + i * 0.05, f, 0.05, 3.2, 0.12); });
+      return;
+    }
+    nsBell(0.7, A5, 0.05, 1.4);                       // Ay ve La pembeleşir
+    nsBell(0.78, E6, 0.035, 1.2);
+    nsAir(2.4, 1.2, 0.02);                            // harfler yer değiştirir
+    // halka çizilirken yükselen pırıltı (A majör pentatonik)
+    var run = [1108.7, 1318.5, 1480, 1760, 1975.5, 2217.5, 2637, 2960, 3520];
+    run.forEach(function (f, i) {
+      var x = i / (run.length - 1), at = 3.8 + 1.7 * (1 - Math.pow(1 - x, 1.6));
+      nsBell(at, f, 0.022 + 0.008 * Math.random(), 0.9);
+    });
+    // halka kapanınca yumuşak akor
+    [440, 659.3, 880, 1108.7, 1760].forEach(function (f, i) { nsBell(5.55 + i * 0.04, f, i === 4 ? 0.025 : 0.045, 3.4, 0.08); });
+  }
   function nameRun() {
     inClearTimers();
     $('inBody').innerHTML =
@@ -1520,7 +1586,9 @@
     $('nmAgain').addEventListener('click', nameRun);
     var nm = $('nm');
     function end() { nm.className = 'nm lit cut done'; $('nmCap').className = 'inp nmcap on'; }
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { end(); return; }
+    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (I.open && !$('inOv').hidden) nameSound(calm);
+    if (calm) { end(); return; }
     inAfter(700, function () { nm.className = 'nm lit'; });
     inAfter(1900, function () { nm.className = 'nm lit cut'; });
     inAfter(2500, function () {                                // harfler sonucun yerine süzülür
@@ -1573,6 +1641,8 @@
     if (!I.open) return;
     I.open = false;
     inClearTimers();
+    nsStop();
+    if (H.ctx && H.ctx.suspend) setTimeout(function () { if (!H.open && !U.open && !I.open) H.ctx.suspend(); }, 500);
     $('inOv').hidden = true;
     $('stage').inert = false;
     try { if (I.from) I.from.focus(); } catch (e) {}
@@ -1658,9 +1728,9 @@
             beats: [], next: 0, bpm: 140, vals: null, lastX: -1, t0: 0, lastPulse: -1, lastTxt: 0 };
   function clock() { return H.ctx ? H.ctx.currentTime : performance.now() / 1000; }
 
-  function initAudio() {
+  function audioCtx() {
     var AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
+    if (!AC) return null;
     if (!H.ctx) {
       try { H.ctx = new AC(); } catch (e) { H.ctx = null; return; }
       var ac = H.ctx, len = ac.sampleRate, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0);
@@ -1670,6 +1740,10 @@
       H.master = ac.createGain(); H.master.gain.value = 0.9; H.master.connect(comp);
     }
     if (H.ctx.resume) H.ctx.resume();
+    return H.ctx;
+  }
+  function initAudio() {
+    if (!audioCtx()) return;
     var c = H.ctx, src = c.createBufferSource(); src.buffer = H.noise; src.loop = true;
     var lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 380;
     var g = c.createGain(); g.gain.value = 0.05;
@@ -1797,7 +1871,7 @@
   function stopBeats() {
     clearInterval(H.timer); H.timer = null;
     if (H.bg) { try { H.bg.stop(); } catch (e) {} H.bg = null; }
-    if (H.ctx && H.ctx.suspend) setTimeout(function () { if (!H.open && !U.open) H.ctx.suspend(); }, 400);
+    if (H.ctx && H.ctx.suspend) setTimeout(function () { if (!H.open && !U.open && !I.open) H.ctx.suspend(); }, 400);
   }
   function openHeart() {
     if (H.open || U.open || isBorn()) return;
